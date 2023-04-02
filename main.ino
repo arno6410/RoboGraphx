@@ -108,6 +108,11 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
   krijtje.SetPosition(x_destination, y_destination);
 }
 
+
+//test-----------------
+
+
+
 //Move in a straight line using several intermediate points
 //Doesn't work 100%
 void StraightLine(float x_destination, float y_destination, Sled krijtje, MultiStepper steppers_control, int n_points) {
