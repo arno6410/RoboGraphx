@@ -28,8 +28,8 @@ float x_board = 0.8; //[m]
 float y_board = 1; //[m]
 float x_start = 0.2+offset; //[m]
 float y_start = 0.1; //[m]
+// Sled krijtje;
 Sled krijtje(x_start, y_start, x_board + 2*offset, y_board, radius, rotation_size); //Create sled object
-
 
 
 void setup() {
@@ -47,6 +47,7 @@ void setup() {
   Serial.println("-----------------------");
   // Serial.print("X_board setup: ");
   // Serial.println(krijtje.GetXBoard());
+
 }
 
 void loop() {
@@ -54,49 +55,58 @@ void loop() {
 
     //=====This works=======
     int value = Serial.parseInt();  
-      delay(2000);
-      
-      if(value==1){ //horizontaal
-        // MoveStraight(0.4+offset,0.1,krijtje,steppers_control);
-        // delay(2000);
-        // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
+    Serial.read();
+    delay(2000);
+    
+    if(value==1){ //horizontaal
+      // MoveStraight(0.4+offset,0.1,krijtje,steppers_control);
+      // delay(2000);
+      // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
 
-        StraightRelative(0.1,0,krijtje,steppers_control);
-        delay(1000);
+      Serial.println("-----Right-----");
+      StraightRelative(0.1,0,steppers_control);
+      delay(1000);
 
-        // StraightLine(0.4+offset,0.1,krijtje,steppers_control,5);
-        // delay(2000);
-        // StraightLine(0.2+offset,0.1,krijtje,steppers_control,5);
-      }
-      else if(value==2){ //verticaal
-        // MoveStraight(0.2+offset,0.25,krijtje,steppers_control);
-        // delay(2000);
-        // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
+      // StraightLine(0.4+offset,0.1,krijtje,steppers_control,5);
+      // delay(2000);
+      // StraightLine(0.2+offset,0.1,krijtje,steppers_control,5);
+    }
+    else if(value==2){ //verticaal
+      // MoveStraight(0.2+offset,0.25,krijtje,steppers_control);
+      // delay(2000);
+      // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
 
-        StraightRelative(-0.1,0,krijtje,steppers_control);
-        delay(1000);
-      }
-      else if(value==3){ //diagonaal
-        MoveStraight(0.4+offset,0.2,krijtje,steppers_control);
-        delay(2000);
-        MoveStraight(0.1+offset,0.1,krijtje,steppers_control);
-      }
-      else if(value==4){ //diagonaal nieuwe functie
-        // StraightLine(0.3+0.029,0.2-0.037,krijtje,steppers_control,4);
-        // delay(2000);
-        // StraightLine(0.1+0.029,0.1-0.037,krijtje,steppers_control,4);
-      }
-      else if(value==5){ //diagonaal relative
-        // StraightRelative(0.2,0.1,krijtje,steppers_control,4);
-        // delay(2000);
-        // StraightRelative(-0.2,-0.1,krijtje,steppers_control,4);
-      }
+      Serial.println("-----Left-----");
+      StraightRelative(-0.1,0,steppers_control);
+      delay(1000);
+    }
+    else if(value==3){ //diagonaal
+      // MoveStraight(0.4+offset,0.2,steppers_control);
+      // delay(2000);
+      // MoveStraight(0.2+offset,0.1,steppers_control);
+
+      Serial.println("-----Diagonal-----");
+      StraightRelative(0.2,0.1,steppers_control);
+      delay(500);
+      StraightRelative(-0.2,-0.1,steppers_control);
+
+    }
+    else if(value==4){ //diagonaal nieuwe functie
+      // StraightLine(0.3+0.029,0.2-0.037,krijtje,steppers_control,4);
+      // delay(2000);
+      // StraightLine(0.1+0.029,0.1-0.037,krijtje,steppers_control,4);
+    }
+    else if(value==5){ //diagonaal relative
+      // StraightRelative(0.2,0.1,krijtje,steppers_control,4);
+      // delay(2000);
+      // StraightRelative(-0.2,-0.1,krijtje,steppers_control,4);
+    }
       
   }  
 }
 
 // ====================Functions==================== 
-void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiStepper steppers_control) {
+void MoveStraight(float x_destination, float y_destination, MultiStepper steppers_control) {
   long go_to_position[2];
 
   // Calculate number of steps
@@ -117,17 +127,18 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
   stepper1.setCurrentPosition(0);
   stepper2.setCurrentPosition(0);
 
-  Serial.print("new x before: ");
-  Serial.print(x_destination);
-  Serial.print(", new y before: ");
-  Serial.println(y_destination);
+  // Serial.print("x before setting: ");
+  // Serial.print(krijtje.GetXPosition());
+  // Serial.print(", y before setting: ");
+  // Serial.println(krijtje.GetYPosition());
 
   krijtje.SetPosition(x_destination, y_destination);
 
-  Serial.print("new x after: ");
-  Serial.print(krijtje.GetXPosition());
-  Serial.print(", new y after: ");
-  Serial.println(krijtje.GetYPosition());
+  // Serial.print("x after setting: ");
+  // Serial.print(krijtje.GetXPosition());
+  // Serial.print(", y after setting: ");
+  // Serial.println(krijtje.GetYPosition());
+
 }
 
 
@@ -154,16 +165,24 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
 //   } 
 // }
 
-void StraightRelative(float rel_x_destination, float rel_y_destination, Sled krijtje, MultiStepper steppers_control) {
+void StraightRelative(float rel_x_destination, float rel_y_destination, MultiStepper steppers_control) {
+  
+  // Serial.print("x before moving: ");
+  // Serial.println(krijtje.GetXPosition());
 
-  Serial.println(krijtje.GetXPosition());
+  // Serial.print("target x: ");
+  // Serial.print(rel_x_destination+krijtje.GetXPosition());
+  // Serial.print(", target y: ");
+  // Serial.println(rel_y_destination+krijtje.GetYPosition());
 
-  Serial.print("target x: ");
-  Serial.print(rel_x_destination+krijtje.GetXPosition());
-  Serial.print(", target y: ");
-  Serial.println(rel_y_destination+krijtje.GetYPosition());
+  float new_x = rel_x_destination+krijtje.GetXPosition();
+  float new_y = rel_y_destination+krijtje.GetYPosition();
 
-  MoveStraight(rel_x_destination+krijtje.GetXPosition(), rel_y_destination+krijtje.GetYPosition(), krijtje, steppers_control);
+  MoveStraight(new_x, new_y, steppers_control);
+  // krijtje.SetPosition(current_x, krijtje.GetYPosition());
+
+  // Serial.print("x after moving: ");
+  // Serial.println(krijtje.GetXPosition());
 }
 
 //Not finished yet

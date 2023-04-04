@@ -51,19 +51,25 @@ float Sled::CalculateRopeLength(float point_x, float point_y, int stepper_number
   return rope_length;
 }
 
-void Sled::Update(float x_destination, float y_destination){
+void Sled::Update(float x_destination, float y_destination){ //efficienter maken
+  // Serial.print("Updating sled position to ");
+  // Serial.print(x_destination);
+  // Serial.print(", ");
+  // Serial.println(y_destination);
+
+
   _d1A = Sled::CalculateRopeLength(_x_position, _y_position, 1);
   // Serial.print("d1A: ");
-  // Serial.println(d1A);
+  // Serial.print(_d1A);
   _d1B = Sled::CalculateRopeLength(x_destination, y_destination, 1);
-  // Serial.print("d1B: ");
-  // Serial.println(d1B);
+  // Serial.print(", d1B: ");
+  // Serial.print(_d1B);
   _d2A = Sled::CalculateRopeLength(_x_position, _y_position, 2);
-  // Serial.print("d2A: ");
-  // Serial.println(d2A);
+  // Serial.print(", d2A: ");
+  // Serial.print(_d2A);
   _d2B = Sled::CalculateRopeLength(x_destination, y_destination, 2);
-  // Serial.print("d2B: ");
-  // Serial.println(d2B);
+  // Serial.print(", d2B: ");
+  // Serial.println(_d2B);
 }
 
 long Sled::CalculateSteps(int stepper_number){
@@ -80,21 +86,23 @@ long Sled::CalculateSteps(int stepper_number){
 }
 
 void Sled::SetPosition(float new_x, float new_y){
-  Serial.println("set");
+  // Serial.print("before setting x: ");
+  // Serial.println(_x_position);
+  // Serial.println("set");
   _x_position = new_x;
   _y_position = new_y;
-  Serial.print("current x: ");
-  Serial.println(_x_position);
-  Serial.print("current y: ");
-  Serial.println(_y_position);
+  // Serial.print("after setting x: ");
+  // Serial.println(_x_position);
+  // Serial.print("current y: ");
+  // Serial.println(_y_position);
 }
 
 float Sled::GetXPosition(){
-  return _x_position;
+  return this->_x_position;
 }
 
 float Sled::GetYPosition(){
-  return _y_position;
+  return this->_y_position;
 }
 
 float Sled::GetXBoard(){
