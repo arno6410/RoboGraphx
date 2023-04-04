@@ -117,11 +117,16 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
   stepper1.setCurrentPosition(0);
   stepper2.setCurrentPosition(0);
 
+  Serial.print("new x before: ");
+  Serial.print(x_destination);
+  Serial.print(", new y before: ");
+  Serial.println(y_destination);
+
   krijtje.SetPosition(x_destination, y_destination);
 
-  Serial.print("new x: ");
+  Serial.print("new x after: ");
   Serial.print(krijtje.GetXPosition());
-  Serial.print(", new y: ");
+  Serial.print(", new y after: ");
   Serial.println(krijtje.GetYPosition());
 }
 
@@ -149,7 +154,6 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
 //   } 
 // }
 
-//Doesn't work yet
 void StraightRelative(float rel_x_destination, float rel_y_destination, Sled krijtje, MultiStepper steppers_control) {
 
   Serial.println(krijtje.GetXPosition());

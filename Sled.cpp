@@ -3,8 +3,9 @@
 #include <math.h>
 
 Sled::Sled(float x_start, float y_start, float x_board, float y_board, float r, int rsize){
-  _x_position = x_start;
-  _y_position = y_start;
+  // _x_position = x_start;
+  // _y_position = y_start;
+  Sled::SetPosition(x_start, y_start);
   _x_board = x_board;
   _y_board = y_board;
   _radius = r;
@@ -78,9 +79,14 @@ long Sled::CalculateSteps(int stepper_number){
   return steps;
 }
 
-void Sled::SetPosition(float x, float y){
-  _x_position = x;
-  _y_position = y;
+void Sled::SetPosition(float new_x, float new_y){
+  Serial.println("set");
+  _x_position = new_x;
+  _y_position = new_y;
+  Serial.print("current x: ");
+  Serial.println(_x_position);
+  Serial.print("current y: ");
+  Serial.println(_y_position);
 }
 
 float Sled::GetXPosition(){

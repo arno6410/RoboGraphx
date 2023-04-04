@@ -7,14 +7,14 @@
 class Sled {
   public:
     Sled(float x_start, float y_start, float x_board, float y_board, float r, int rsize);
-    //void MoveSteppers();
     float CalculateRopeLength(float point_x, float point_y, int stepper_number);
     void Update(float destination_x, float destination_y);
     long CalculateSteps(int stepper_number);
-    void SetPosition(float x, float y);
+    void SetPosition(float new_x, float new_y);
     float GetXPosition();
     float GetYPosition();
     float GetXBoard();
+
   private:
     float _x_position;
     float _y_position;
