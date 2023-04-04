@@ -13,22 +13,22 @@
 // Origin in upper left corner
 
 // Define the stepper motor and the pins that is connected to
-AccelStepper stepper1(1, 3, 2); // (Typeof driver: with 2 pins, STEP, DIR)
-AccelStepper stepper2(1, 5, 4);
+AccelStepper stepper1(1, 5, 4); // (Typeof driver: with 2 pins, STEP, DIR)
+AccelStepper stepper2(1, 3, 2);
 MultiStepper steppers_control;  // Create instance of MultiStepper
 long go_to_position[2]; // An array to store the target position (x and y coordinates)
 unsigned long t1;
 unsigned long t2;
 unsigned long myTime;
 int rotation_size = 200;
-float radius = 0.015; //[m] 
-float x_board = 0.8; //[m]
-float x_start = 0.14+0.029; //[m]
-float y_start = 0.1; // [m]
 float distance_stepper_edge = 0.008 + 0.021; //AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
 float offset = distance_stepper_edge;
+float radius = 0.015; //[m] 
+float x_board = 0.8; //[m]
 float y_board = 1; //[m]
-Sled krijtje(x_start, y_start, x_board + 2*distance_stepper_edge, y_board, radius, rotation_size); //Create sled object
+float x_start = 0.2+offset; //[m]
+float y_start = 0.1; //[m]
+Sled krijtje(x_start, y_start, x_board + 2*offset, y_board, radius, rotation_size); //Create sled object
 
 
 
@@ -39,11 +39,13 @@ void setup() {
   stepper2.setMaxSpeed(500); // Set maximum speed value for the stepper
   stepper2.setCurrentPosition(0); // Set the current position to 0 steps
 
-
   steppers_control.addStepper(stepper1);
   steppers_control.addStepper(stepper2);
 
   Serial.begin(9600); //9600 baud rate
+
+  Serial.print("X_board setup: ");
+  Serial.println(krijtje.GetXBoard());
 }
 
 void loop() {
@@ -54,6 +56,7 @@ void loop() {
       delay(2000);
       
       if(value==1){ //horizontaal
+        Serial.println("here");
         MoveStraight(0.4+offset,0.1,krijtje,steppers_control);
         delay(2000);
         MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
@@ -63,9 +66,9 @@ void loop() {
         // StraightLine(0.2+offset,0.1,krijtje,steppers_control,5);
       }
       else if(value==2){ //verticaal
-        MoveStraight(0.1+offset,0.25,krijtje,steppers_control);
+        MoveStraight(0.2+offset,0.25,krijtje,steppers_control);
         delay(2000);
-        MoveStraight(0.1+offset,0.1,krijtje,steppers_control);
+        MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
       }
       else if(value==3){ //diagonaal
         MoveStraight(0.4+offset,0.2,krijtje,steppers_control);
@@ -100,7 +103,7 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
   Serial.println(steps2);
 
   go_to_position[0] = steps1;
-  go_to_position[1] = steps2;
+  go_to_position[1] = steps2; 
 
   steppers_control.moveTo(go_to_position);  
   steppers_control.runSpeedToPosition();
