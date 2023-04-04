@@ -44,8 +44,9 @@ void setup() {
 
   Serial.begin(9600); //9600 baud rate
 
-  Serial.print("X_board setup: ");
-  Serial.println(krijtje.GetXBoard());
+  Serial.println("-----------------------");
+  // Serial.print("X_board setup: ");
+  // Serial.println(krijtje.GetXBoard());
 }
 
 void loop() {
@@ -56,19 +57,24 @@ void loop() {
       delay(2000);
       
       if(value==1){ //horizontaal
-        Serial.println("here");
-        MoveStraight(0.4+offset,0.1,krijtje,steppers_control);
-        delay(2000);
-        MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
+        // MoveStraight(0.4+offset,0.1,krijtje,steppers_control);
+        // delay(2000);
+        // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
+
+        StraightRelative(0.1,0,krijtje,steppers_control);
+        delay(1000);
 
         // StraightLine(0.4+offset,0.1,krijtje,steppers_control,5);
         // delay(2000);
         // StraightLine(0.2+offset,0.1,krijtje,steppers_control,5);
       }
       else if(value==2){ //verticaal
-        MoveStraight(0.2+offset,0.25,krijtje,steppers_control);
-        delay(2000);
-        MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
+        // MoveStraight(0.2+offset,0.25,krijtje,steppers_control);
+        // delay(2000);
+        // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
+
+        StraightRelative(-0.1,0,krijtje,steppers_control);
+        delay(1000);
       }
       else if(value==3){ //diagonaal
         MoveStraight(0.4+offset,0.2,krijtje,steppers_control);
@@ -97,9 +103,9 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
   krijtje.Update(x_destination, y_destination);
   long steps1 = krijtje.CalculateSteps(1);
   Serial.print("steps1: ");
-  Serial.println(steps1);
+  Serial.print(steps1);
   long steps2 = krijtje.CalculateSteps(2);
-  Serial.print("steps2: ");
+  Serial.print(", steps2: ");
   Serial.println(steps2);
 
   go_to_position[0] = steps1;
@@ -108,7 +114,15 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
   steppers_control.moveTo(go_to_position);  
   steppers_control.runSpeedToPosition();
 
+  stepper1.setCurrentPosition(0);
+  stepper2.setCurrentPosition(0);
+
   krijtje.SetPosition(x_destination, y_destination);
+
+  Serial.print("new x: ");
+  Serial.print(krijtje.GetXPosition());
+  Serial.print(", new y: ");
+  Serial.println(krijtje.GetYPosition());
 }
 
 
@@ -118,25 +132,33 @@ void MoveStraight(float x_destination, float y_destination, Sled krijtje, MultiS
 
 //Move in a straight line using several intermediate points
 //Doesn't work 100%
-void StraightLine(float x_destination, float y_destination, Sled krijtje, MultiStepper steppers_control, int n_points) {
-  // Calculate intermediate points(delta)
-  float total_x = x_destination - krijtje.GetXPosition();
-  float total_y = y_destination - krijtje.GetYPosition();
-  float delta_x = total_x / n_points;
-  float delta_y = total_y / n_points;
+// void StraightLine(float x_destination, float y_destination, Sled krijtje, MultiStepper steppers_control, int n_points) {
+//   // Calculate intermediate points(delta)
+//   float total_x = x_destination - krijtje.GetXPosition();
+//   float total_y = y_destination - krijtje.GetYPosition();
+//   float delta_x = total_x / n_points;
+//   float delta_y = total_y / n_points;
   
-  float current_destination[2] = {krijtje.GetXPosition() + delta_x, krijtje.GetYPosition() + delta_y};
+//   float current_destination[2] = {krijtje.GetXPosition() + delta_x, krijtje.GetYPosition() + delta_y};
 
-  // Move to each point
-  for (int i = 0; i < n_points; i++) {
-    MoveStraight(current_destination[0],current_destination[1],krijtje,steppers_control);
-    current_destination[0] += delta_x;
-    current_destination[1] += delta_y;    
-  } 
-}
+//   // Move to each point
+//   for (int i = 0; i < n_points; i++) {
+//     MoveStraight(current_destination[0],current_destination[1],krijtje,steppers_control);
+//     current_destination[0] += delta_x;
+//     current_destination[1] += delta_y;    
+//   } 
+// }
 
 //Doesn't work yet
-void StraightRelative(float rel_x_destination, float rel_y_destination, Sled krijtje, MultiStepper steppers_control, int n_points) {
+void StraightRelative(float rel_x_destination, float rel_y_destination, Sled krijtje, MultiStepper steppers_control) {
+
+  Serial.println(krijtje.GetXPosition());
+
+  Serial.print("target x: ");
+  Serial.print(rel_x_destination+krijtje.GetXPosition());
+  Serial.print(", target y: ");
+  Serial.println(rel_y_destination+krijtje.GetYPosition());
+
   MoveStraight(rel_x_destination+krijtje.GetXPosition(), rel_y_destination+krijtje.GetYPosition(), krijtje, steppers_control);
 }
 

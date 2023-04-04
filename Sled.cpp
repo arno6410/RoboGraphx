@@ -26,12 +26,12 @@ float Sled::CalculateRopeLength(float point_x, float point_y, int stepper_number
   }
   float stepper_y = 0;
 
-  Serial.print("x_board: ");
-  Serial.println(_x_board);
-  Serial.print("y_board: ");
-  Serial.println(_y_board);
+  // Serial.print("x_board: ");
+  // Serial.println(_x_board);
+  // Serial.print("y_board: ");
+  // Serial.println(_y_board);
 
-  Serial.println(stepper_y);
+  // Serial.println(stepper_y);
 
   float stepper_distance_straight = sqrt(pow((point_x-stepper_x),2)+pow((point_y),2));
   float a = asin((point_y)/stepper_distance_straight);
