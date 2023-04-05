@@ -20,7 +20,7 @@ long go_to_position[2];         // An array to store the target position (x and 
 unsigned long t1;
 unsigned long t2;
 unsigned long myTime;
-int rotation_size = 200;
+int rotation_size = 3200;
 // float distance_stepper_edge = 0.008 + 0.021;  //AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
 // float offset = distance_stepper_edge;
 float offset = 8 + 21;  //AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
@@ -31,6 +31,8 @@ float x_start = 200 + offset;   //[mm]
 float y_start = 100;            //[mm]
 // Sled krijtje;
 Sled krijtje(x_start, y_start, x_board + 2 * offset, y_board, radius, rotation_size);  //Create sled object
+bool movement_type = false;
+
 
 const byte numChars = 32;
 char receivedChars[numChars];
@@ -47,6 +49,7 @@ void setup() {
   steppers_control.addStepper(stepper2);
 
   Serial.begin(9600);  //9600 baud rate
+  Serial.setTimeout(10);
 
   Serial.println("-----------------------");
 }
@@ -63,10 +66,15 @@ void loop() {
     //   command_array[i] = received_command;
     // }
 
+    long int t3 = millis();
     String received_command = Serial.readString();
+    long int t4 = millis();
     received_command.trim();
     Serial.println(received_command);
     
+    Serial.print("Time taken by reading serial: "); Serial.print(t4-t3); Serial.println(" milliseconds");
+
+
     long int t1 = millis();
     InterpretGCode(received_command);
     long int t2 = millis();
@@ -104,8 +112,18 @@ void loop() {
 }
 
 // ====================Functions====================
-void MoveStraight(float x_destination, float y_destination, MultiStepper steppers_control) { //Steppers are moved to destination
+void MoveStraight(float x_destination, float y_destination, MultiStepper steppers_control, bool coordinates) { //Steppers are moved to destination, coordinates = false for absolute movement, true for relative movement
   long go_to_position[2];
+
+  Serial.print("X: ");
+  Serial.print(x_destination);
+  Serial.print(", Y: ");
+  Serial.println(y_destination);
+  if(coordinates == true){
+    x_destination = x_destination + krijtje.GetXPosition();
+    y_destination = y_destination + krijtje.GetYPosition();
+    // Serial.println("relative movement");
+  }
 
   // Check boundaries
   if(x_destination >  x_board + 2 * offset){
@@ -131,8 +149,10 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
   go_to_position[0] = steps1;
   go_to_position[1] = steps2;
 
+  // Serial.println("Before moving");
   steppers_control.moveTo(go_to_position);
   steppers_control.runSpeedToPosition();
+  // Serial.println("After moving");
 
   //Stepper position reset to 0 so that they move again next round
   stepper1.setCurrentPosition(0);
@@ -164,38 +184,103 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
 // }
 
 void StraightRelative(float rel_x_destination, float rel_y_destination, MultiStepper steppers_control) {
-  MoveStraight(rel_x_destination + krijtje.GetXPosition(), rel_y_destination + krijtje.GetYPosition(), steppers_control);
+  MoveStraight(rel_x_destination + krijtje.GetXPosition(), rel_y_destination + krijtje.GetYPosition(), steppers_control, movement_type);
 }
 
 void InterpretGCode(String command){
   int t = 0;
   int k = 6;
-  String command_parameters[k];
+  // String command_parameters[k];
   float x_coord;
   float y_coord;
+  bool move = false;      //Set to true if the Gcommand is for moving (G0, G1)
 
+  // Serial.println(command);
   //Seperate command string into list of parameters
   do {
     int i1 = command.indexOf(' ');
 
     String next_parameter = command.substring(0, i1);
+    // Serial.println(next_parameter);
+    // Serial.println(next_parameter.substring(1).toFloat());
+    switch(next_parameter[0]){
+      case 'X':
+        // Serial.println("X case");
+        x_coord = next_parameter.substring(1).toFloat();
+        // Serial.println(x_coord);
+        break;
+      case 'Y':
+        // Serial.println("Y case");
+        y_coord = next_parameter.substring(1).toFloat();
+        break;
+      case 'G':        
+        // Serial.println("G case");
+        int command_type = next_parameter.substring(1).toInt(); //Take the int after G
 
-    // switch(next_parameter[0]){
-    //   case 'G':
+        // switch (command_type){ //G0, G1, etc, more can be added
+        //   case 0: //travel move
+        //     // StraightRelative(x_coord, y_coord, steppers_control);
+        //     move = true;            
+        //     break;
+        //   case 1: //draw move
+        //     // MoveStraight(x_coord, y_coord, steppers_control) ;
+        //     move = true;
+        //     break;
+        //   case 90: //Absolute
+        //     movement_type = false;
+        //     break;
+        //   case 91: //relative
+        //     movement_type = true;
+        //     break;
+        //   default:
+        //     // Serial.println("default");
+        //     break;
+        // }  
 
-    //     break;
-    // }
+        if (command_type == 0){ //travel move
+          // StraightRelative(x_coord, y_coord, steppers_control);
+          move = true;
+        }
+        else if (command_type == 1){ //draw move
+          // MoveStraight(x_coord, y_coord, steppers_control) ;
+          move = true;
+        }
+        else if (command_type == 90){ //Absolute
+          movement_type = false;
+        }
+        else if (command_type == 91){ //relative
+          movement_type = true;
+        }
+        else{
+          // Serial.println("default");
+        }
 
-    command_parameters[t] = next_parameter;
-    t++;
+        break;
+      
+      default:
+        // Serial.print("default case ");
+        // Serial.println(next_parameter[0]);
+        break;
+    }
+
+    // command_parameters[t] = next_parameter;
+    // t++;
     command = command.substring(i1);              //Only keeps the substring of the string after index i1
     command.trim();
     // Serial.println(command);
-  } while(command.indexOf(' ') != -1);
+  } while(command != "");
 
-  if(command.length() > 1){
-    command_parameters[t] = command;
+
+  if(move == true){
+    MoveStraight(x_coord, y_coord, steppers_control, movement_type);
+    Serial.println("movement finished");
   }
+
+  Serial.println("ok");
+
+  // if(command.length() > 1){
+  //   command_parameters[t] = command;
+  // }
 
   // stringstream ss(str);
   // String word;
@@ -208,37 +293,37 @@ void InterpretGCode(String command){
   // }
 
   //Print all elements of list
-  Serial.print("Parameters: ");
-  for(int i=0; i<=t; i++){
-    Serial.print(command_parameters[i]);
-    Serial.print("; ");
-  }
+  // Serial.print("Parameters: ");
+  // for(int i=0; i<=t; i++){
+  //   Serial.print(command_parameters[i]);
+  //   Serial.print("; ");
+  // }
 
   //Iterate over parameters to assign their values
   //Letters and variables can be added
-  for(int i=0; i<=t; i++){
-    String parameter = command_parameters[i];
-    if(parameter[0] == 'X'){ //The first character of the ith string in the array 
-      x_coord = parameter.substring(1).toFloat();
-    } else if (parameter[0] == 'Y'){
-      y_coord = parameter.substring(1).toFloat();
-    }
-  }
+  // for(int i=0; i<=t; i++){
+  //   String parameter = command_parameters[i];
+  //   if(parameter[0] == 'X'){ //The first character of the ith string in the array 
+  //     x_coord = parameter.substring(1).toFloat();
+  //   } else if (parameter[0] == 'Y'){
+  //     y_coord = parameter.substring(1).toFloat();
+  //   }
+  // }
 
-  int command_type = command_parameters[0].substring(1).toInt(); //Take the int after G
+  // int command_type = command_parameters[0].substring(1).toInt(); //Take the int after G
 
-  switch (command_type){ //G0, G01, etc, more can be added
-    case 0:
-      StraightRelative(x_coord, y_coord, steppers_control);
-      break;
-    case 1:
-      MoveStraight(x_coord, y_coord, steppers_control) ;
-      break;
-    default:
-      Serial.println("default");
-      break;
- }
- Serial.println("ok");
+//   switch (command_type){ //G0, G01, etc, more can be added
+//     case 0:
+//       StraightRelative(x_coord, y_coord, steppers_control);
+//       break;
+//     case 1:
+//       MoveStraight(x_coord, y_coord, steppers_control) ;
+//       break;
+//     default:
+//       Serial.println("default");
+//       break;
+//  }
+ 
 
 }
 

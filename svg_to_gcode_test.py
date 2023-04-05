@@ -14,12 +14,12 @@ import time
 # how far down the tool moves after every pass. Set it to 0 if your machine does not support Z axis movement.
 gcode_compiler = Compiler(interfaces.Gcode, movement_speed=1000, cutting_speed=300, pass_depth=5)
 
-curves = parse_file("Belgium_brussels_iris.svg") # Parse an svg file into geometric curves
+curves = parse_file("svg_scaled.svg") # Parse an svg file into geometric curves
 
 gcode_compiler.append_curves(curves) 
 
 
-gcode_compiler.compile_to_file("drawing.gcode", passes=1)
+gcode_compiler.compile_to_file("drawing2.gcode", passes=1)
 # # Load the SVG file and extract the path data
 # paths, attributes = svg2paths('Circle.svg')
 
@@ -41,8 +41,8 @@ BAUDRATE = 9600
 TIMEOUT = 1
 
 # Define file path and open the file
-FILE_PATH = 'gcode_file.txt'  # replace with your file path
-# FILE_PATH = 'drawing.gcode'  # replace with your file path
+FILE_PATH = 'relative.txt'  # replace with your file path
+# FILE_PATH = 'drawing2.gcode'  # replace with your file path
 file = open(FILE_PATH, 'r')
 
 # Initialize the serial port
@@ -50,6 +50,7 @@ ser = serial.Serial(SERIAL_PORT, BAUDRATE, timeout=TIMEOUT)
 
 # Wait for the serial connection to be established
 time.sleep(2)
+start = 0
 
 # Loop through the file and send each line to the serial port
 for line in file:
@@ -59,10 +60,16 @@ for line in file:
     # Send the line to the serial port
     ser.write(line.encode())
 
+    stop = time.time()
+
+    elapsed_time = stop - start
+    print('Execution time:', elapsed_time, 'seconds')
+
     # Wait for an "ok" response from the serial port
     while True:
         response = ser.readline().decode().strip()
         if response == "ok":
+            start = time.time()
             break
         elif response:
             print(response)
