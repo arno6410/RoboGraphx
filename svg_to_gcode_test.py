@@ -19,7 +19,7 @@ curves = parse_file("Belgium_brussels_iris.svg") # Parse an svg file into geomet
 gcode_compiler.append_curves(curves) 
 
 
-gcode_compiler.compile_to_file("drawing.gcode", passes=2)
+gcode_compiler.compile_to_file("drawing.gcode", passes=1)
 # # Load the SVG file and extract the path data
 # paths, attributes = svg2paths('Circle.svg')
 
@@ -41,7 +41,8 @@ BAUDRATE = 9600
 TIMEOUT = 1
 
 # Define file path and open the file
-FILE_PATH = 'drawing.gcode'  # replace with your file path
+FILE_PATH = 'gcode_file.txt'  # replace with your file path
+# FILE_PATH = 'drawing.gcode'  # replace with your file path
 file = open(FILE_PATH, 'r')
 
 # Initialize the serial port

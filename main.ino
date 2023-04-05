@@ -54,12 +54,23 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
 
+    // int m = 8;
+    // String command_array[m];
+    // for(int i = 0; i<m; ){
+    //   String received_command = Serial.readString();
+    //   received_command.trim();
+    //   Serial.println(received_command);
+    //   command_array[i] = received_command;
+    // }
+
     String received_command = Serial.readString();
     received_command.trim();
     Serial.println(received_command);
-
+    
+    long int t1 = millis();
     InterpretGCode(received_command);
-
+    long int t2 = millis();
+    Serial.print("Time taken by InterpretGCode: "); Serial.print(t2-t1); Serial.println(" milliseconds");
 
     // if (received_command == "A"){
     //   InterpretGCode("G0 -0.05 0.15");  
@@ -130,7 +141,7 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
   //Set the internal stepper position to the destination. Currently no calibration/FB so the object needs to remember its position
   krijtje.SetPosition(x_destination, y_destination);
 
-  Serial.println("ok");
+  // Serial.println("ok");
 }
 
 //Move in a straight line using several intermediate points
@@ -158,7 +169,7 @@ void StraightRelative(float rel_x_destination, float rel_y_destination, MultiSte
 
 void InterpretGCode(String command){
   int t = 0;
-  int k = 10;
+  int k = 6;
   String command_parameters[k];
   float x_coord;
   float y_coord;
@@ -168,6 +179,13 @@ void InterpretGCode(String command){
     int i1 = command.indexOf(' ');
 
     String next_parameter = command.substring(0, i1);
+
+    // switch(next_parameter[0]){
+    //   case 'G':
+
+    //     break;
+    // }
+
     command_parameters[t] = next_parameter;
     t++;
     command = command.substring(i1);              //Only keeps the substring of the string after index i1
@@ -175,7 +193,19 @@ void InterpretGCode(String command){
     // Serial.println(command);
   } while(command.indexOf(' ') != -1);
 
-  command_parameters[t] = command;
+  if(command.length() > 1){
+    command_parameters[t] = command;
+  }
+
+  // stringstream ss(str);
+  // String word;
+  // while (ss >> word) {
+  //     command_parameters[t++] = word;
+  // }
+
+  // for (int i = 0; i < idx; i++) {
+  //     cout << arr[i] << endl;
+  // }
 
   //Print all elements of list
   Serial.print("Parameters: ");
@@ -204,7 +234,11 @@ void InterpretGCode(String command){
     case 1:
       MoveStraight(x_coord, y_coord, steppers_control) ;
       break;
+    default:
+      Serial.println("default");
+      break;
  }
+ Serial.println("ok");
 
 }
 
