@@ -23,30 +23,19 @@ float Sled::CalculateRopeLength(float point_x, float point_y, int stepper_number
     stepper_x = 0;
   }
   else{
-    stepper_x = Sled::GetXBoard();
+    stepper_x = _x_board;
   }
   float stepper_y = 0;
 
-  // Serial.print("x_board: ");
-  // Serial.println(_x_board);
-  // Serial.print("y_board: ");
-  // Serial.println(_y_board);
+  float stepper_distance_straight = sqrt(pow((point_x-stepper_x),2)+pow((point_y),2));    //[mm]
 
-  // Serial.println(stepper_y);
-
-  float stepper_distance_straight = sqrt(pow((point_x-stepper_x),2)+pow((point_y),2));
-  float a = asin((point_y)/stepper_distance_straight);
-  // float a = atan((point_y)/(point_x));
-
-  // Serial.println(asin((point_y)/stepper_distance_straight));
-  // Serial.println(atan((point_y)/(point_x)));
-
+  float a = asin((point_y)/stepper_distance_straight);                
   float b = asin((_radius/stepper_distance_straight));
   float rope_angle = a + b;
 
-  float rope_around_spool = rope_angle * _radius;
-  float rope_straight = sqrt(pow(stepper_distance_straight,2) - pow(_radius,2));
-  float rope_length = rope_around_spool + rope_straight;
+  float rope_around_spool = rope_angle * _radius;   //[mm]                                       
+  float rope_straight = sqrt(pow(stepper_distance_straight,2) - pow(_radius,2));    //[mm]
+  float rope_length = rope_around_spool + rope_straight;    //[mm]
 
   return rope_length;
 }
@@ -86,15 +75,8 @@ long Sled::CalculateSteps(int stepper_number){
 }
 
 void Sled::SetPosition(float new_x, float new_y){
-  // Serial.print("before setting x: ");
-  // Serial.println(_x_position);
-  // Serial.println("set");
   _x_position = new_x;
   _y_position = new_y;
-  // Serial.print("after setting x: ");
-  // Serial.println(_x_position);
-  // Serial.print("current y: ");
-  // Serial.println(_y_position);
 }
 
 float Sled::GetXPosition(){

@@ -21,20 +21,20 @@ unsigned long t1;
 unsigned long t2;
 unsigned long myTime;
 int rotation_size = 200;
-float distance_stepper_edge = 0.008 + 0.021;  //AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
-float offset = distance_stepper_edge;
-float radius = 0.015;          //[m]
-float x_board = 0.8;           //[m]
-float y_board = 1;             //[m]
-float x_start = 0.2 + offset;  //[m]
-float y_start = 0.1;           //[m]
+// float distance_stepper_edge = 0.008 + 0.021;  //AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
+// float offset = distance_stepper_edge;
+float offset = 8 + 21;  //AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
+float radius = 15;              //[mm]
+float x_board = 800;            //[mm]
+float y_board = 1000;           //[mm]
+float x_start = 200 + offset;   //[mm]
+float y_start = 100;            //[mm]
 // Sled krijtje;
 Sled krijtje(x_start, y_start, x_board + 2 * offset, y_board, radius, rotation_size);  //Create sled object
 
 const byte numChars = 32;
 char receivedChars[numChars];
 boolean newData = false;
-
 
 void setup() {
   stepper1.setMaxSpeed(500);       // Set maximum speed value for the stepper
@@ -68,8 +68,6 @@ void loop() {
     //   InterpretGCode("G0 -0.05 0.15");
     // }
 
-
-
     // Serial.print("received_commandeived: ");
     // Serial.println(received_commandeivedChars);
     //=====This works=======
@@ -78,50 +76,37 @@ void loop() {
     // delay(2000);
 
     // if (value == 1) {  //horizontaal
-    //   // MoveStraight(0.4+offset,0.1,krijtje,steppers_control);
-    //   // delay(2000);
-    //   // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
-
     //   Serial.println("-----Right-----");
     //   StraightRelative(0.1, 0, steppers_control);
     //   delay(1000);
-
-    //   // StraightLine(0.4+offset,0.1,krijtje,steppers_control,5);
-    //   // delay(2000);
-    //   // StraightLine(0.2+offset,0.1,krijtje,steppers_control,5);
     // } else if (value == 2) {  //verticaal
-    //   // MoveStraight(0.2+offset,0.25,krijtje,steppers_control);
-    //   // delay(2000);
-    //   // MoveStraight(0.2+offset,0.1,krijtje,steppers_control);
-
     //   Serial.println("-----Left-----");
     //   StraightRelative(-0.1, 0, steppers_control);
     //   delay(1000);
     // } else if (value == 3) {  //diagonaal
-    //   // MoveStraight(0.4+offset,0.2,steppers_control);
-    //   // delay(2000);
-    //   // MoveStraight(0.2+offset,0.1,steppers_control);
-
     //   Serial.println("-----Diagonal-----");
     //   StraightRelative(0.2, 0.1, steppers_control);
     //   delay(500);
     //   StraightRelative(-0.2, -0.1, steppers_control);
-
-    // } else if (value == 4) {  //diagonaal nieuwe functie
-    //   // StraightLine(0.3+0.029,0.2-0.037,krijtje,steppers_control,4);
-    //   // delay(2000);
-    //   // StraightLine(0.1+0.029,0.1-0.037,krijtje,steppers_control,4);
-    // } else if (value == 5) {  //diagonaal relative
-    //   // StraightRelative(0.2,0.1,krijtje,steppers_control,4);
-    //   // delay(2000);
-    //   // StraightRelative(-0.2,-0.1,krijtje,steppers_control,4);
-    // }
+    // } 
   }
 }
 
 // ====================Functions====================
-void MoveStraight(float x_destination, float y_destination, MultiStepper steppers_control) {
+void MoveStraight(float x_destination, float y_destination, MultiStepper steppers_control) { //Steppers are moved to destination
   long go_to_position[2];
+
+  // Check boundaries
+  if(x_destination >  x_board + 2 * offset){
+    x_destination =  x_board + 2 * offset;
+  } else if (x_destination < 0){
+    x_destination = 0;
+  }
+  if(y_destination >  y_board){
+    y_destination =  y_board;
+  } else if (y_destination < 0){
+    y_destination = 0;
+  }
 
   // Calculate number of steps
   krijtje.Update(x_destination, y_destination);
@@ -138,26 +123,15 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
   steppers_control.moveTo(go_to_position);
   steppers_control.runSpeedToPosition();
 
+  //Stepper position reset to 0 so that they move again next round
   stepper1.setCurrentPosition(0);
   stepper2.setCurrentPosition(0);
 
-  // Serial.print("x before setting: ");
-  // Serial.print(krijtje.GetXPosition());
-  // Serial.print(", y before setting: ");
-  // Serial.println(krijtje.GetYPosition());
-
+  //Set the internal stepper position to the destination. Currently no calibration/FB so the object needs to remember its position
   krijtje.SetPosition(x_destination, y_destination);
 
-  // Serial.print("x after setting: ");
-  // Serial.print(krijtje.GetXPosition());
-  // Serial.print(", y after setting: ");
-  // Serial.println(krijtje.GetYPosition());
+  Serial.println("ok");
 }
-
-
-//test-----------------
-
-
 
 //Move in a straight line using several intermediate points
 //Doesn't work 100%
@@ -179,23 +153,7 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
 // }
 
 void StraightRelative(float rel_x_destination, float rel_y_destination, MultiStepper steppers_control) {
-
-  // Serial.print("x before moving: ");
-  // Serial.println(krijtje.GetXPosition());
-
-  // Serial.print("target x: ");
-  // Serial.print(rel_x_destination+krijtje.GetXPosition());
-  // Serial.print(", target y: ");
-  // Serial.println(rel_y_destination+krijtje.GetYPosition());
-
-  float new_x = rel_x_destination + krijtje.GetXPosition();
-  float new_y = rel_y_destination + krijtje.GetYPosition();
-
-  MoveStraight(new_x, new_y, steppers_control);
-  // krijtje.SetPosition(current_x, krijtje.GetYPosition());
-
-  // Serial.print("x after moving: ");
-  // Serial.println(krijtje.GetXPosition());
+  MoveStraight(rel_x_destination + krijtje.GetXPosition(), rel_y_destination + krijtje.GetYPosition(), steppers_control);
 }
 
 void InterpretGCode(String command){
@@ -205,7 +163,7 @@ void InterpretGCode(String command){
   float x_coord;
   float y_coord;
 
-  //Seperate command into list of parameters
+  //Seperate command string into list of parameters
   do {
     int i1 = command.indexOf(' ');
 
@@ -214,13 +172,13 @@ void InterpretGCode(String command){
     t++;
     command = command.substring(i1);              //Only keeps the substring of the string after index i1
     command.trim();
-    Serial.println(command);
+    // Serial.println(command);
   } while(command.indexOf(' ') != -1);
 
   command_parameters[t] = command;
-  Serial.print("Parameters: ");
 
   //Print all elements of list
+  Serial.print("Parameters: ");
   for(int i=0; i<=t; i++){
     Serial.print(command_parameters[i]);
     Serial.print("; ");
@@ -237,10 +195,16 @@ void InterpretGCode(String command){
     }
   }
 
+  int command_type = command_parameters[0].substring(1).toInt(); //Take the int after G
 
-  if(command_parameters[0] == "G0"){ //hier switch case gebruiken
-    StraightRelative(x_coord, y_coord, steppers_control);
-  }
+  switch (command_type){ //G0, G01, etc, more can be added
+    case 0:
+      StraightRelative(x_coord, y_coord, steppers_control);
+      break;
+    case 1:
+      MoveStraight(x_coord, y_coord, steppers_control) ;
+      break;
+ }
 
 }
 

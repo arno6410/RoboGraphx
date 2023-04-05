@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="381.30063"
+   id="svg378"
+   sodipodi:docbase="/home/delaunoi/tmp/"
+   sodipodi:docname="Flag_Belgium_brussels.svg"
+   sodipodi:version="0.32"
+   version="1.0"
+   width="391.51279"
+   x="0"
+   y="0"
+   inkscape:version="0.46"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <metadata
+     id="metadata2471">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Clipart by Cedric de Launois - Belgium - Brussels</dc:title>
+        <dc:description />
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li />
+            <rdf:li>europe</rdf:li>
+            <rdf:li>belgium</rdf:li>
+            <rdf:li>flag</rdf:li>
+            <rdf:li>sign</rdf:li>
+            <rdf:li>0x8ecfe34</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://www.openclipart.org">
+            <dc:title>Cedric de Launois</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Cedric de Launois</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Cedric de Launois</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     id="base"
+     showgrid="false"
+     snaptogrid="false"
+     inkscape:zoom="1.0339173"
+     inkscape:cx="379.6381"
+     inkscape:cy="239.56885"
+     inkscape:window-width="1280"
+     inkscape:window-height="750"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:current-layer="svg378">
+    <inkscape:grid
+       id="GridFromPre046Settings"
+       type="xygrid"
+       originx="0px"
+       originy="0px"
+       spacingx="1mm"
+       spacingy="1mm"
+       color="#0000ff"
+       empcolor="#0000ff"
+       opacity="0.2"
+       empopacity="0.4"
+       empspacing="5"
+       units="mm"
+       visible="true"
+       enabled="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs380">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3208">
+      <path
+         d="M 0,595.29 L 850.38,595.29 L 850.38,0 L 0,0 L 0,595.29 z"
+         id="path3210" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3202">
+      <path
+         d="M -1.197,596.138 L 851.197,596.138 L 851.197,-1.138 L -1.197,-1.138 L -1.197,596.138 z"
+         id="path3204" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3196">
+      <path
+         d="M 107.119,326.434 L 128.123,326.434 L 128.123,306.129 L 107.119,306.129 L 107.119,326.434 z"
+         clip-rule="evenodd"
+         id="path3198" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7569">
+      <path
+         d="M 61.52,40.607 L 112.1865,40.607 L 112.1865,90.1109 L 61.52,90.1109 L 61.52,40.607 z"
+         id="path7571" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7561">
+      <path
+         d="M 50.52,35.2491 L 135.559,35.2491 L 135.559,97.6111 L 50.52,97.6111 L 50.52,35.2491 z"
+         id="path7563" />
+    </clipPath>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 248.03149 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 248.03149 : 1"
+       inkscape:persp3d-origin="372.04724 : 165.35433 : 1"
+       id="perspective2481" />
+  </defs>
+  <g
+     transform="matrix(18.600067,0,0,-18.600067,-1991.0813,6073.4366)"
+     id="g3192">
+    <g
+       id="g3194"
+       clip-path="url(#clipPath3196)">
+      <g
+         id="g3200"
+         clip-path="url(#clipPath3202)">
+        <g
+           id="g3206"
+           clip-path="url(#clipPath3208)">
+          <path
+             d="M 110.204,318.058 C 110.539,319.786 111.905,320.044 113.339,319.771 C 112.682,321.587 112.379,324.516 114.397,325.414 C 114.803,325.226 115.077,324.451 115.077,324.041 C 115.957,326.521 118.242,326.97 119.091,325.837 C 119.053,325.747 118.976,325.593 118.95,325.542 C 119.35,325.32 119.679,324.965 119.784,324.439 C 120.434,324.439 121.528,323.875 121.528,322.336 C 121.528,320.6 119.583,318.71 118.655,318.026 C 119.527,317.983 120.233,317.3 120.233,316.667 C 120.779,316.817 121.826,317.064 122.836,317.064 C 126.231,317.064 127.992,314.978 127.992,313.55 C 127.992,312.362 126.761,312.088 125.953,312.088 C 124.558,312.088 124.407,312.798 123.952,313.294 C 123.341,313.961 122.52,314.346 121.361,314.346 C 120.121,314.346 118.019,313.867 116.808,312.742 C 117.869,313.272 118.647,313.653 119.771,313.653 C 121.306,313.653 122.759,313.003 122.759,311.46 C 122.759,310.498 121.605,310.408 121.13,310.408 C 120.117,310.408 119.797,311.344 118.86,311.332 C 117.36,311.311 116.347,309.693 116.347,308.343 C 116.347,307.253 116.988,307.651 116.988,306.753 C 116.988,306.522 116.744,306.125 116.244,306.125 C 115.997,306.125 114.243,306.467 113.987,310.28 C 112.137,311.169 112.939,315.051 111.704,315.051 C 110.896,315.051 109.986,313.627 108.818,313.627 C 107.6,313.627 107.151,314.837 107.151,315.5 C 107.151,316.978 108.647,317.966 110.204,318.058 z M 117.527,323.977 C 116.876,322.849 116.675,320.357 116.462,319.206 C 116.995,320.19 117.614,322.583 117.527,323.977"
+             style="fill:#1b458f;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path3212" />
+          <path
+             style="fill:#fedd15;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             d="M 365.46875,70.34375 C 343.37683,70.34375 313.65624,99.973806 313.65625,156.59375 C 313.65625,176.58168 318.25577,222.11554 318.5,233.6875 C 312.56373,216.55499 304.03125,169.62425 304.03125,146.96875 C 304.03125,135.641 307.4142,101.19954 299.9375,91.5625 C 286.13005,97.310909 280.1875,116.13297 280.1875,138.28125 C 280.1875,170.1605 295.82103,203.59424 304.5,223.09375 C 292.17661,203.59425 279.09824,191.28125 263.5625,191.28125 C 243.16128,191.28125 230.06588,210.07914 234.875,217.78125 C 283.94312,224.99494 294.87501,240.2778 294.875,281.625 C 294.875,312.65889 302.01921,322.69995 311.65625,329.3125 C 310.13461,333.01327 308.85202,336.70547 307.78125,340.40625 C 291.00566,334.11306 289.31982,317.96223 285.46875,281.875 C 280.18998,232.5251 246.26552,226.96875 231.5,226.96875 C 189.88979,226.96875 174.1875,252.1532 174.1875,266.9375 C 174.1875,278.49067 184.78158,290.3125 197.78125,290.3125 C 219.85439,290.3125 233.94698,265.50001 252,265.5 C 288.63202,265.5 265.63915,345.98929 304.28125,358.21875 C 300.73076,391.01849 313.00167,420.32665 328.59375,429.34375 C 340.65414,436.29444 342.09374,428.00159 342.09375,427.15625 C 342.09375,418.92814 329.09375,421.16209 329.09375,401.625 C 329.09375,364.27913 352.94912,335.84374 383.0625,335.84375 C 410.03869,335.84375 406.67,352.00001 429.0625,352 C 434.94241,352 448.09375,349.81965 448.09375,339.46875 C 448.09375,321.39695 422.96524,309.81249 398.46875,309.8125 C 372.3567,309.8125 316.48904,329.74272 318.96875,399.4375 C 316.24483,391.26574 314.40624,382.36878 314.40625,372.46875 C 314.40625,318.02794 366.59853,280.10257 426.65625,278.75 C 490.50867,277.3035 489.3892,319 514.84375,319 C 537.25503,319 544,311.67621 544,301.15625 C 544,284.85031 522.56795,246.21875 460.40625,246.21875 C 437.93861,246.21875 424.72146,247.44344 403.53125,254.1875 C 403.53125,232.54643 380.85866,220.95556 356.53125,227.90625 C 376.04954,213.85458 424.25001,173.60638 424.25,137.3125 C 424.25,120.36784 414.68671,109.375 405.21875,109.375 C 403.60318,109.375 402.31251,109.87669 402.3125,112.28125 C 402.06829,173.54125 366.92027,208.97031 343.0625,227.90625 C 355.83674,213.1783 394.12499,158.00384 394.125,109.875 C 394.125,86.975293 381.98656,85.999998 379.1875,86 C 373.15731,86 370.29114,89.383366 368.375,91.5625 C 368.60043,93.253208 369.06249,96.844804 369.0625,102.875 C 369.0625,158.68717 346.66708,212.67168 324.5,244.0625 C 330.34234,224.48785 336.23174,143.80479 342.5625,124.8125 C 351.69233,97.460594 358.35343,90.869159 376.3125,74.1875 C 375.11022,73.229432 371.48015,70.343752 365.46875,70.34375 z M 378.96875,263.09375 C 348.42327,277.72777 328.90307,297.06753 317.40625,317.46875 C 314.75746,314.57576 313.40625,310.80824 313.40625,306.46875 C 313.40626,279.22956 346.35686,263.75125 378.96875,263.09375 z"
+             id="path3214"
+             transform="matrix(5.32321e-2,0,0,-5.32321e-2,98.3673,329.658)" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
