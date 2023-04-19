@@ -24,10 +24,10 @@ unsigned long myTime;
 int rotation_size = 3200;       // Microstepping, amount of steps for one rotation of stepper motor
 float offset = 8 + 21;          // AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
 float radius = 15;              // [mm]
-float x_board = 800;            // [mm]
-float y_board = 1000;           // [mm]
-float x_start = 200 + offset;   // [mm]
-float y_start = 100;            // [mm]
+float x_board = 2400;            // [mm]
+float y_board = 1200;           // [mm]
+float x_start = 1200 + offset;   // [mm]
+float y_start = 1150;            // [mm]
 Sled krijtje(x_start, y_start, x_board + 2 * offset, y_board, radius, rotation_size);  //Create sled object
 bool movement_type = false;     // false if absolute movement, true if relative movement
 
@@ -68,7 +68,7 @@ void loop() {
 void MoveStraight(float x_destination, float y_destination, MultiStepper steppers_control, bool coordinate_type) { 
   // Steppers are moved to destination
   // X and Y coordinates, MultiStepper object, coordinate_type to set relative or absolute movement
-  // false for absolute movement, true for relative movement
+  // coordinate_type false for absolute movement, true for relative movement
   long go_to_position[2];
 
   Serial.print("X: ");
@@ -80,16 +80,16 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
     y_destination = y_destination + krijtje.GetYPosition();
   }
 
-  // Check boundaries of board
+  // Check boundaries of board AFWERKEN
   if(x_destination >  x_board + 2 * offset){
-    x_destination =  x_board + 2 * offset;
+    x_destination =  x_board - 2 * offset;
   } else if (x_destination < 0){
-    x_destination = 0;
+    x_destination = 2*offset;
   }
   if(y_destination >  y_board){
     y_destination =  y_board;
   } else if (y_destination < 0){
-    y_destination = 0;
+    y_destination = 50;
   }
 
   // Calculate number of steps steppers need to move

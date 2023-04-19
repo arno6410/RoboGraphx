@@ -9,17 +9,20 @@ from svg_to_gcode.svg_parser import parse_file
 from svg_to_gcode.compiler import Compiler, interfaces
 import serial
 import time
+from svg_to_gcode import TOLERANCES
+
+TOLERANCES['approximation'] = 1
 
 # Instantiate a compiler, specifying the interface type and the speed at which the tool should move. pass_depth controls
 # how far down the tool moves after every pass. Set it to 0 if your machine does not support Z axis movement.
 gcode_compiler = Compiler(interfaces.Gcode, movement_speed=1000, cutting_speed=300, pass_depth=5)
 
-curves = parse_file("gcode/svg_scaled.svg") # Parse an svg file into geometric curves
+curves = parse_file("gcode/test.svg") # Parse an svg file into geometric curves
 
 gcode_compiler.append_curves(curves) 
 
 
-gcode_compiler.compile_to_file("gcode/drawing2.gcode", passes=1)
+# gcode_compiler.compile_to_file("gcode/drawing2.gcode", passes=1)
 # # Load the SVG file and extract the path data
 # paths, attributes = svg2paths('gcode/Circle.svg')
 
@@ -41,7 +44,7 @@ BAUDRATE = 9600
 TIMEOUT = 1
 
 # Define file path and open the file
-FILE_PATH = 'gcode/relative.txt'  # replace with your file path
+FILE_PATH = 'gcode/output9.gcode'  # replace with your file path
 # FILE_PATH = 'gcode/drawing2.gcode'  # replace with your file path
 file = open(FILE_PATH, 'r')
 
