@@ -44,7 +44,7 @@ BAUDRATE = 9600
 TIMEOUT = 1
 
 # Define file path and open the file
-FILE_PATH = 'gcode/output9.gcode'  # replace with your file path
+FILE_PATH = 'gcode/output10.gcode'  # replace with your file path
 # FILE_PATH = 'gcode/drawing2.gcode'  # replace with your file path
 file = open(FILE_PATH, 'r')
 

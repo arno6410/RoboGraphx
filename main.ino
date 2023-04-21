@@ -8,6 +8,7 @@
 #include <MultiStepper.h>
 #include "Sled.h"
 #include <math.h>
+#include <Servo.h>
 
 // use 1/16 steps! 200 steps per revolution -> 3200 steps per revolution
 // This is defined in rotation_size
@@ -31,6 +32,9 @@ float y_start = 1150;            // [mm]
 Sled krijtje(x_start, y_start, x_board + 2 * offset, y_board, radius, rotation_size);  //Create sled object
 bool movement_type = false;     // false if absolute movement, true if relative movement
 
+Servo myservo;
+int servo_pos = 0;    // variable to store the servo position
+
 void setup() {
   stepper1.setMaxSpeed(500);       // Set maximum speed value for the stepper
   stepper1.setCurrentPosition(0);  // Set the current position to 0 steps
@@ -43,6 +47,9 @@ void setup() {
 
   Serial.begin(9600);  //9600 baud rate
   Serial.setTimeout(10);
+
+  myservo.attach(9);
+  servo_pos = myservo.read();
 
   Serial.println("-----------------------");
 }
@@ -146,6 +153,10 @@ void InterpretGCode(String command){
   float x_coord;          // X and Y coordinates
   float y_coord;
   bool move = false;      // Set to true if the Gcommand is for moving (G0, G1)
+  int speed = 1000;
+  int m_value = 0;
+  bool is_writing = false;//Necessary?
+  int pos = 0;
 
   //Seperate command string into array of parameters
   do {
@@ -158,6 +169,34 @@ void InterpretGCode(String command){
         break;
       case 'Y':
         y_coord = next_parameter.substring(1).toFloat();
+        break;
+      case 'F':
+        speed = next_parameter.substring(1).toInt();
+        stepper1.setMaxSpeed(speed);
+        stepper2.setMaxSpeed(speed);
+        Serial.print("Set speed to: ");
+        Serial.println(speed);
+        break;
+      case 'M':
+        Serial.println("Engage pen");
+        m_value = next_parameter.substring(1).toInt();
+        if (m_value == 3){
+          for (pos = servo_pos+30; pos >= servo_pos; pos -= 1) { // goes from 180 degrees to 0 degrees
+            myservo.write(pos);              // tell servo to go to position in variable 'pos'
+            delay(1);                       // waits 15ms for the servo to reach the position
+          }
+          // myservo.write(0);
+          // myservo.write(90);
+        }
+        else if (m_value == 5){
+          
+
+          for (pos = servo_pos; pos <= servo_pos+30; pos += 1) { // goes from 0 degrees to 10 degrees
+            // in steps of 1 degree
+            myservo.write(pos);              // tell servo to go to position in variable 'pos'
+            delay(1);                       // waits 15ms for the servo to reach the position
+          }
+        }
         break;
       case 'G':        
         int command_type = next_parameter.substring(1).toInt(); // Take the int after G
@@ -177,6 +216,8 @@ void InterpretGCode(String command){
       
       default:
         break;
+     
+      
     }
 
     command = command.substring(i1);    // Only keeps the substring of the string after index i1
