@@ -21,32 +21,41 @@ class FileSelectionGUI(tk.Frame):
         self.frame = tk.Frame(self.master)
 
         self.master.title("Select File and Draw")
-        # w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-        # self.master.geometry("%dx%d+0+0" % (w, h))
-        self.master.geometry("1000x600")      
+        w, h = root.winfo_screenwidth()-100, root.winfo_screenheight()-100
+        self.master.geometry("{}x{}+0+0". format(w, h))
+        # self.master.geometry("1000x600")      
+
+        root.columnconfigure(0, weight=3)
+        root.columnconfigure(1, weight=3)
+        root.columnconfigure(2, weight=1)
+        root.rowconfigure(0, weight=1)
+        root.rowconfigure(1, weight=2)
+        root.rowconfigure(2, weight=2)
+        root.rowconfigure(3, weight=4)
         
         self.label = tk.Label(self.master, text="No file selected.")
-        self.label.pack(pady=10)
+        self.label.grid(row = 0, column = 1, sticky = 'w')
 
         self.preview_canvas = tk.Canvas(background="white")
-        self.preview_canvas.pack(side=tk.LEFT, fill="both", expand = True)
-        # self.preview_canvas.pack(padx=10)
-        # self.preview_canvas.bind('<Configure>', self.resize_canvas)
+        self.preview_canvas.grid(row = 1, column = 0, columnspan = 3, rowspan = 3, sticky = 'w'+'e'+'n'+'s')
 
         self.select_button = tk.Button(self.master, text="Select file", command=self.select_file)
-        self.select_button.pack(side=tk.BOTTOM, padx=10, pady=10)
+        self.select_button.grid(row = 0, column = 0, padx=2, pady=2, sticky = 'w'+'e'+'n'+'s')
 
         self.input_dim_button = tk.Button(self.master, text = 'Input board dimensions', width = 25, command = self.open_board_size_window)
-        self.input_dim_button.pack()
+        self.input_dim_button.grid(row = 0, column = 2, padx=2, pady=2, sticky = 'w'+'e'+'n'+'s')
+
+        self.dim_label = tk.Label(self.master, text="X: " + str(BOARD_WIDTH) + ", Y: " + str(BOARD_HEIGHT))
+        self.dim_label.grid(row = 0, column = 3, sticky = 'e')
 
         self.clear_button = tk.Button(self.master, text="Clear", command=self.clear_preview)
-        self.clear_button.pack(side=tk.BOTTOM, padx=10, pady=10)
+        self.clear_button.grid(row = 2, column = 3, padx=2, pady=2, sticky = 'w'+'e'+'n'+'s')
 
         self.preview_button = tk.Button(self.master, text="Preview", command=self.preview_gcode_file)
-        self.preview_button.pack(side=tk.BOTTOM, padx=10, pady=10)
+        self.preview_button.grid(row = 1, column = 3, padx=2, pady=2, sticky = 'w'+'e'+'n'+'s')
 
         self.draw_button = tk.Button(self.master, text="Draw", command=self.draw_file)
-        self.draw_button.pack(side=tk.BOTTOM, padx=10, pady=10)
+        self.draw_button.grid(row = 3, column = 3, padx=2, pady=2, sticky = 'w'+'e'+'n'+'s')
 
         self.selected_file = None
         
@@ -227,12 +236,10 @@ def draw_function(file_path, ser):
 ####        MAIN        ####
 if __name__ == "__main__":
 
-    ser = open_serial() #uncomment to send to arduino
+    # ser = open_serial() #uncomment to send to arduino
     root = tk.Tk()
     app = FileSelectionGUI(root)
-    app.mainloop()
-    # app = FileSelectionGUI()
-    # app.attributes('-fullscreen', True)
+    # root.attributes('-fullscreen', True)
     # app.state('zoomed')
-    # app.mainloop()
+    app.mainloop()
     
