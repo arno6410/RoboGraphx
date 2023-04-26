@@ -23,13 +23,15 @@ unsigned long t1;
 unsigned long t2;
 unsigned long myTime;
 int rotation_size = 3200;       // Microstepping, amount of steps for one rotation of stepper motor
-float offset = 8 + 21;          // AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
+float x_offset = 8 + 21;          // AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
+float y_offset = 30;              // bocenkant bord naar stepper
+float ground_to_pen = 120;        //offset tussen grond en de pen
 float radius = 15;              // [mm]
-float x_board = 2400;            // [mm]
-float y_board = 1200;           // [mm]
-float x_start = 1200 + offset;   // [mm]
-float y_start = 1150;            // [mm]
-Sled krijtje(x_start, y_start, x_board + 2 * offset, y_board, radius, rotation_size);  //Create sled object
+float x_board = 500;            // [mm]
+float y_board = 500;           // [mm]
+float x_start = 1200 + x_offset;   // [mm]
+float y_start = y_board-y_offset-ground_to_pen;            // [mm]
+Sled krijtje(x_start, y_start, x_board + 2*x_offset, y_board, radius, rotation_size);  //Create sled object
 bool movement_type = false;     // false if absolute movement, true if relative movement
 
 Servo myservo;
@@ -55,6 +57,7 @@ void setup() {
 }
 
 void loop() {
+
   if (Serial.available() > 0) {
     long int t3 = millis();
     String received_command = Serial.readString();
@@ -88,10 +91,10 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
   }
 
   // Check boundaries of board AFWERKEN
-  if(x_destination >  x_board + 2 * offset){
-    x_destination =  x_board - 2 * offset;
+  if(x_destination >  x_board + 2 * x_offset){
+    x_destination =  x_board - 2 * x_offset;
   } else if (x_destination < 0){
-    x_destination = 2*offset;
+    x_destination = 2*x_offset;
   }
   if(y_destination >  y_board){
     y_destination =  y_board;
@@ -163,14 +166,41 @@ void InterpretGCode(String command){
     int i1 = command.indexOf(' ');    // Takes index of space character in string
 
     String next_parameter = command.substring(0, i1); // Next parameter to consider is everything until the space
+    Serial.println(next_parameter[0]);
     switch(next_parameter[0]){
       case 'X':
+        Serial.println("X command");
         x_coord = next_parameter.substring(1).toFloat();
         break;
       case 'Y':
+        Serial.println("Y command");
         y_coord = next_parameter.substring(1).toFloat();
         break;
+      case 'A':
+        Serial.println("A command");
+        String test_command = next_parameter.substring(1);
+        // command.substring(i1);    // Only keeps the substring of the string after index i1
+        // test_command.trim();
+        int i2 = test_command.indexOf(',');
+        // String test_parameter = test_command.substring(0, i2);
+        
+        float x_board_test = test_command.substring(0, i2).toFloat();
+        Serial.print("X board: ");
+        Serial.println(x_board_test);
+        
+        // int i2 = test_command.indexOf(' ');
+        // String test_parameter = test_command.substring(0, i2);
+        float y_board_test = test_command.substring(i2-1).toFloat();
+        Serial.print("Y board: ");
+        Serial.println(y_board_test);
+        krijtje.SetBoardSize(x_board_test, y_board_test, x_offset, y_offset, ground_to_pen);
+
+        Serial.print("X board updated: ");
+        Serial.println(krijtje.GetXBoard());
+        break;
+        
       case 'F':
+        Serial.println("F command");        
         speed = next_parameter.substring(1).toInt();
         stepper1.setMaxSpeed(speed);
         stepper2.setMaxSpeed(speed);
@@ -198,7 +228,8 @@ void InterpretGCode(String command){
           }
         }
         break;
-      case 'G':        
+      case 'G':     
+        Serial.println("G command");
         int command_type = next_parameter.substring(1).toInt(); // Take the int after G
         if (command_type == 0){   // Travel move (marker / chalk not engaged)
           move = true;
@@ -212,9 +243,20 @@ void InterpretGCode(String command){
         else if (command_type == 91){   // Relative
           movement_type = true;
         }
+        else if(command_type == 28){    // Homing
+          x_coord = x_start;
+          y_coord = y_start;
+          for (pos = servo_pos; pos <= servo_pos+30; pos += 1) { // goes from 0 degrees to 10 degrees
+            // in steps of 1 degree
+            myservo.write(pos);              // tell servo to go to position in variable 'pos'
+            delay(1);                       // waits 15ms for the servo to reach the position
+          }
+          move = true;
+        }
         break;
       
       default:
+        Serial.println("defa");
         break;
      
       
@@ -224,7 +266,7 @@ void InterpretGCode(String command){
     command.trim();
   } while(command != "");   // While loop until string is empty
 
-
+  Serial.println(move);
   if(move == true){
     MoveStraight(x_coord, y_coord, steppers_control, movement_type);
     Serial.println("movement finished");

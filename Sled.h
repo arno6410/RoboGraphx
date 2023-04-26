@@ -11,6 +11,7 @@ class Sled {
     void Update(float destination_x, float destination_y);
     long CalculateSteps(int stepper_number);
     void SetPosition(float new_x, float new_y);
+    void SetBoardSize(float x_board, float y_board, float x_offset, float y_offset, float ground_to_pen);
     float GetXPosition();
     float GetYPosition();
     float GetXBoard();

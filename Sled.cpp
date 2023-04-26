@@ -79,6 +79,12 @@ void Sled::SetPosition(float new_x, float new_y){
   _y_position = new_y;
 }
 
+void Sled::SetBoardSize(float x_board, float y_board, float x_offset, float y_offset, float ground_to_pen){
+  _x_board = x_board + 2*x_offset;
+  _y_board = y_board - y_offset;
+  Sled::SetPosition(_x_board/2, _y_board - ground_to_pen);
+}
+
 float Sled::GetXPosition(){
   return this->_x_position;
 }

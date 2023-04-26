@@ -15,90 +15,51 @@ BOARD_HEIGHT = 1200 # mm
 # is_valid_board_size = False
 ####            GUI         ####
 class FileSelectionGUI(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master):
         super().__init__(master)
         self.master = master
-        self.pack()
+        self.frame = tk.Frame(self.master)
 
-        # input board size
-        self.input_label = tk.Label(self, text="Input board size [mm]: ") #Default waarden ergens zetten in GUI?
-        self.input_label.pack(side=tk.TOP, pady=10)
-
-        self.input_button = tk.Button(self, text="Input", command=self.define_board_size)
-        self.input_button.pack(side=tk.RIGHT, padx=10, pady=10)
-
-        self.y_box = tk.Text(self, height = 5, width = 20)
-        self.y_box.pack(side=tk.RIGHT)
-
-        self.x_box = tk.Text(self, height = 5, width = 20)
-        self.x_box.pack(side=tk.RIGHT)
-
-        self.second_window = None
+        self.master.title("Select File and Draw")
+        # w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+        # self.master.geometry("%dx%d+0+0" % (w, h))
+        self.master.geometry("1000x600")      
         
+        self.label = tk.Label(self.master, text="No file selected.")
+        self.label.pack(pady=10)
 
-    def open_second_window(self):
+        self.preview_canvas = tk.Canvas(background="white")
+        self.preview_canvas.pack(side=tk.LEFT, fill="both", expand = True)
+        # self.preview_canvas.pack(padx=10)
+        # self.preview_canvas.bind('<Configure>', self.resize_canvas)
 
-        if self.second_window is None:
-            # create second window
-            self.second_window = tk.Toplevel()
+        self.select_button = tk.Button(self.master, text="Select file", command=self.select_file)
+        self.select_button.pack(side=tk.BOTTOM, padx=10, pady=10)
 
-            w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-            root.geometry("%dx%d+0+0" % (w, h))
+        self.input_dim_button = tk.Button(self.master, text = 'Input board dimensions', width = 25, command = self.open_board_size_window)
+        self.input_dim_button.pack()
 
-            self.second_window.title("Select File and Draw")
-            self.second_window.geometry("1000x600")      
-            
-            self.second_window.label = tk.Label(self.second_window, text="No file selected.")
-            self.second_window.label.pack(pady=10)
+        self.clear_button = tk.Button(self.master, text="Clear", command=self.clear_preview)
+        self.clear_button.pack(side=tk.BOTTOM, padx=10, pady=10)
 
-            self.second_window.preview_canvas = tk.Canvas(background="white")
-            self.second_window.preview_canvas.pack(side=tk.LEFT, fill="both", expand = True)
-            # self.preview_canvas.pack(padx=10)
-            # self.preview_canvas.bind('<Configure>', self.resize_canvas)
+        self.preview_button = tk.Button(self.master, text="Preview", command=self.preview_gcode_file)
+        self.preview_button.pack(side=tk.BOTTOM, padx=10, pady=10)
 
-            self.second_window.select_button = tk.Button(self.second_window, text="Select file", command=self.select_file)
-            self.second_window.select_button.pack(side=tk.BOTTOM, padx=10, pady=10)
+        self.draw_button = tk.Button(self.master, text="Draw", command=self.draw_file)
+        self.draw_button.pack(side=tk.BOTTOM, padx=10, pady=10)
 
-            self.second_window.clear_button = tk.Button(self.second_window, text="Clear", command=self.clear_preview)
-            self.second_window.clear_button.pack(side=tk.BOTTOM, padx=10, pady=10)
-
-            self.second_window.preview_button = tk.Button(self.second_window, text="Preview", command=self.preview_gcode_file)
-            self.second_window.preview_button.pack(side=tk.BOTTOM, padx=10, pady=10)
-
-            self.second_window.draw_button = tk.Button(self.second_window, text="Draw", command=self.draw_file)
-            self.second_window.draw_button.pack(side=tk.BOTTOM, padx=10, pady=10)
-
-            self.second_window.selected_file = None
-
-        else:
-            # Bring the existing window to the front
-            self.second_window.lift()
+        self.selected_file = None
         
-        # Destroy the first window
-        self.master.withdraw()
-
-        # Show the second window
-        self.second_window.deiconify()
-        
-
-    def define_board_size(self):
-        x_inp = self.x_box.get(1.0, "end-1c") #-1c to remove newline character
-        y_inp = self.y_box.get(1.0, "end-1c")
-        # self.input_label.config(text = "X: "+ x_inp + " mm; Y: " + y_inp + " mm")
-        is_valid_board_size = True
-        # set board sizes 
-        BOARD_WIDTH = x_inp
-        BOARD_HEIGHT = y_inp
-        self.open_second_window()
-        # self.master.destroy()
-        
-
+    def open_board_size_window(self):
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = BoardSizeGUI(self.newWindow)
+    
     def select_file(self):
         file_path = filedialog.askopenfilename()
         if file_path:
             self.selected_file = file_path
             file_name = os.path.basename(file_path)
-            self.second_window.label.config(text=f"Selected file: {file_name}")
+            self.label.config(text=f"Selected file: {file_name}")
     
 
     def preview_gcode_file(self):
@@ -131,8 +92,8 @@ class FileSelectionGUI(tk.Frame):
                     print("drawing OFF")
 
         
-        scale_x = self.second_window.preview_canvas.winfo_width()/BOARD_WIDTH
-        scale_y = self.second_window.preview_canvas.winfo_height()/BOARD_HEIGHT
+        scale_x = self.preview_canvas.winfo_width()/BOARD_WIDTH
+        scale_y = self.preview_canvas.winfo_height()/BOARD_HEIGHT
         prev_x = x_coords[0] * scale_x
         prev_y = y_coords[0] * scale_y
         
@@ -141,13 +102,13 @@ class FileSelectionGUI(tk.Frame):
             curr_y = y_coords[i] * scale_y
             
             if draw_list[i] == True:
-                self.second_window.preview_canvas.create_line(prev_x, prev_y, curr_x, curr_y, fill = 'red')
+                self.preview_canvas.create_line(prev_x, prev_y, curr_x, curr_y, fill = 'red')
             
             prev_x = curr_x
             prev_y = curr_y
         
     def clear_preview(self):
-        self.second_window.preview_canvas.delete("all")
+        self.preview_canvas.delete("all")
 
     def resize_canvas(self, event):
         self.update()
@@ -155,9 +116,9 @@ class FileSelectionGUI(tk.Frame):
         aspect_ratio = BOARD_WIDTH/BOARD_HEIGHT
 
         if w/h > aspect_ratio:
-            self.second_window.preview_canvas.config(width=aspect_ratio*h, height=h)
+            self.preview_canvas.config(width=aspect_ratio*h, height=h)
         else:
-            self.second_window.preview_canvas.config(width=w, height=w/aspect_ratio)
+            self.preview_canvas.config(width=w, height=w/aspect_ratio)
     
 
         
@@ -166,7 +127,41 @@ class FileSelectionGUI(tk.Frame):
             # Call the function that draws the file with the selected file path as an argument
             draw_function(self.selected_file, ser)
         else:
-            self.second_window.label.config(text="No file selected.")
+            self.label.config(text="No file selected.")
+
+
+class BoardSizeGUI(tk.Tk):
+    def __init__(self, master):
+        # super().__init__(master)
+        self.master = master
+        self.frame = tk.Frame(self.master)
+        self.frame.pack()
+
+        # input board size
+        self.input_label = tk.Label(self.master, text="Input board height and width [mm]: ") #Default waarden ergens zetten in GUI?
+        self.input_label.pack(side=tk.TOP, pady=10)
+
+        self.input_button = tk.Button(self.master, text="Input", command=self.define_board_size)
+        self.input_button.pack(side=tk.RIGHT, padx=10, pady=10)
+
+        self.y_box = tk.Text(self.master, height = 5, width = 20)
+        self.y_box.insert(1.0, str(BOARD_HEIGHT))
+        self.y_box.pack(side=tk.RIGHT)
+
+        self.x_box = tk.Text(self.master, height = 5, width = 20)
+        self.x_box.insert(1.0, str(BOARD_WIDTH))
+        self.x_box.pack(side=tk.RIGHT)
+
+    def define_board_size(self):
+        x_inp = self.x_box.get(1.0, "end-1c") #-1c to remove newline character
+        y_inp = self.y_box.get(1.0, "end-1c")
+        # self.input_label.config(text = "X: "+ x_inp + " mm; Y: " + y_inp + " mm")
+        is_valid_board_size = True
+        # set board sizes 
+        BOARD_WIDTH = int(x_inp)
+        BOARD_HEIGHT = int(y_inp)
+
+        self.master.destroy()
 
 
 ####            START SERIAL CONNECTION             ####
@@ -188,6 +183,13 @@ def draw_function(file_path, ser):
     file = open(file_path, 'r')
 
     start = 0 # debug
+
+    # Gcode to set the board size
+    size_string = "A" + str(BOARD_WIDTH) + "," + str(BOARD_HEIGHT) + "\n"
+    ser.write(size_string.encode())
+    print(ser.readline().decode().strip())
+    print(ser.readline().decode().strip())
+    print(ser.readline().decode().strip())
 
     # Loop through the file and send each line to the serial port
     for line in file:
@@ -211,6 +213,11 @@ def draw_function(file_path, ser):
             elif response:
                 print(response)
 
+    # Move back to default position
+    # toevoegen M5
+    # homing_string = ("G1 X"+str(BOARD_WIDTH/2)+" Y" + str(BOARD_HEIGHT) + ";\n")
+    homing_string = ("G28;\n")
+    ser.write(homing_string.encode())
     # Close the file and serial port
     file.close()
 
@@ -220,10 +227,10 @@ def draw_function(file_path, ser):
 ####        MAIN        ####
 if __name__ == "__main__":
 
+    ser = open_serial() #uncomment to send to arduino
     root = tk.Tk()
-    app = FileSelectionGUI(master=root)
+    app = FileSelectionGUI(root)
     app.mainloop()
-    # ser = open_serial() #uncomment to send to arduino
     # app = FileSelectionGUI()
     # app.attributes('-fullscreen', True)
     # app.state('zoomed')
