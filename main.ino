@@ -169,14 +169,19 @@ void InterpretGCode(String command){
     Serial.println(next_parameter[0]);
     switch(next_parameter[0]){
       case 'X':
+      {
         Serial.println("X command");
         x_coord = next_parameter.substring(1).toFloat();
         break;
+      }
       case 'Y':
+      {
         Serial.println("Y command");
         y_coord = next_parameter.substring(1).toFloat();
         break;
+      }
       case 'A':
+      {
         Serial.println("A command");
         String test_command = next_parameter.substring(1);
         // command.substring(i1);    // Only keeps the substring of the string after index i1
@@ -198,8 +203,9 @@ void InterpretGCode(String command){
         Serial.print("X board updated: ");
         Serial.println(krijtje.GetXBoard());
         break;
-        
+      }
       case 'F':
+      {
         Serial.println("F command");        
         speed = next_parameter.substring(1).toInt();
         stepper1.setMaxSpeed(speed);
@@ -207,7 +213,9 @@ void InterpretGCode(String command){
         Serial.print("Set speed to: ");
         Serial.println(speed);
         break;
+      }
       case 'M':
+      {
         Serial.println("Engage pen");
         m_value = next_parameter.substring(1).toInt();
         if (m_value == 3){
@@ -228,7 +236,9 @@ void InterpretGCode(String command){
           }
         }
         break;
+      }
       case 'G':     
+      {
         Serial.println("G command");
         int command_type = next_parameter.substring(1).toInt(); // Take the int after G
         if (command_type == 0){   // Travel move (marker / chalk not engaged)
@@ -254,12 +264,12 @@ void InterpretGCode(String command){
           move = true;
         }
         break;
-      
+      }
       default:
+      {
         Serial.println("defa");
         break;
-     
-      
+      }      
     }
 
     command = command.substring(i1);    // Only keeps the substring of the string after index i1
