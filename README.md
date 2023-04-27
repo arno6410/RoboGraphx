@@ -31,12 +31,6 @@ The best way to generate usable Gcode is to convert a SVG to Gcode using [Inksca
 
 ## Installation
 
-Install my-project with npm
-
-```bash
-  npm install my-project
-  cd my-project
-```
     
 ## Possible Future Features
 
