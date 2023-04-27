@@ -7,6 +7,8 @@ The goal of this project is to develop a system that can write and erase on a bl
 Right now, the system can draw most Gcode on a whiteboard
 
 ![example](./pictures/charmander.jpg)
+
+
 Supported commands: 
 - **G... X... Y... F...**
     - **G** determines the command type
