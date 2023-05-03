@@ -5,14 +5,15 @@ from serial import Serial
 import time
 
 # Define serial port settings
-SERIAL_PORT = 'COM5'#'/dev/tty.usbmodem21101'  # replace with your serial port name
+SERIAL_PORT = 'COM5'  # replace with your serial port name /dev/tty.usbmodem21101
 BAUDRATE = 9600
 TIMEOUT = 1
 
 # DEFAULT BOARD SIZE
-BOARD_WIDTH = 2400 # mm
-BOARD_HEIGHT = 1200 # mm
+board_width = 2400 # mm
+board_height = 1200 # mm
 # is_valid_board_size = False
+board_size_updated = False
 ####            GUI         ####
 class FileSelectionGUI(tk.Frame):
     def __init__(self, master):
@@ -45,8 +46,10 @@ class FileSelectionGUI(tk.Frame):
         self.input_dim_button = tk.Button(self.master, text = 'Input board dimensions', width = 25, command = self.open_board_size_window)
         self.input_dim_button.grid(row = 0, column = 2, padx=2, pady=2, sticky = 'w'+'e'+'n'+'s')
 
-        self.dim_label = tk.Label(self.master, text="X: " + str(BOARD_WIDTH) + ", Y: " + str(BOARD_HEIGHT))
+        self.dim_label = tk.Label(self.master, text="X: " + str(board_width) + ", Y: " + str(board_height))
         self.dim_label.grid(row = 0, column = 3, sticky = 'e')
+
+        self.preview_canvas.bind('<Enter>', self.update_dimension_label) # DIMENSION LABEL IS CHANGED WHEN ENTERING CANVAS WITH MOUSE POINTER
 
         self.clear_button = tk.Button(self.master, text="Clear", command=self.clear_preview)
         self.clear_button.grid(row = 2, column = 3, padx=2, pady=2, sticky = 'w'+'e'+'n'+'s')
@@ -81,7 +84,7 @@ class FileSelectionGUI(tk.Frame):
         with open(self.selected_file, 'r') as f:
             for line in f:
                 line = line.replace(";\n","")
-                print(line)
+                #print(line)
                 if line.startswith('G1'):
                     x_coord = float(line.split('X')[-1].split(' ')[0])
                     y_coord = float(line.split('Y')[-1].split(' ')[0])
@@ -90,19 +93,19 @@ class FileSelectionGUI(tk.Frame):
                     y_coords.append(y_coord)
                     draw_list.append(draw_flag)
 
-                    if (x_coord > BOARD_WIDTH or x_coord < 0 or y_coord > BOARD_HEIGHT or y_coord < 0):
+                    if (x_coord > board_width or x_coord < 0 or y_coord > board_height or y_coord < 0):
                         self.label.config(text="ATTENTION: SOME MOVES ARE OUT OF BOUND!")
 
                 elif line == "M3 S255":
                     draw_flag = True
-                    print("drawing ON")
+                    #print("drawing ON")
                 elif line == "M5":
                     draw_flag = False
-                    print("drawing OFF")
+                    #print("drawing OFF")
 
         
-        scale_x = self.preview_canvas.winfo_width()/BOARD_WIDTH
-        scale_y = self.preview_canvas.winfo_height()/BOARD_HEIGHT
+        scale_x = self.preview_canvas.winfo_width()/board_width
+        scale_y = self.preview_canvas.winfo_height()/board_height
         prev_x = x_coords[0] * scale_x
         prev_y = y_coords[0] * scale_y
         
@@ -119,17 +122,16 @@ class FileSelectionGUI(tk.Frame):
     def clear_preview(self):
         self.preview_canvas.delete("all")
 
+    # CURRENTLY NOT WORKING
     def resize_canvas(self, event):
         self.update()
         w,h = event.width-100, event.height-100
-        aspect_ratio = BOARD_WIDTH/BOARD_HEIGHT
+        aspect_ratio = board_width/board_height
 
         if w/h > aspect_ratio:
             self.preview_canvas.config(width=aspect_ratio*h, height=h)
         else:
             self.preview_canvas.config(width=w, height=w/aspect_ratio)
-    
-
         
     def draw_file(self):
         if self.selected_file:
@@ -137,6 +139,10 @@ class FileSelectionGUI(tk.Frame):
             draw_function(self.selected_file, ser)
         else:
             self.label.config(text="No file selected.")
+    
+    def update_dimension_label(self, event):
+        self.dim_label.config(text="X: " + str(board_width) + ", Y: " + str(board_height))
+
 
 
 class BoardSizeGUI(tk.Tk):
@@ -154,22 +160,33 @@ class BoardSizeGUI(tk.Tk):
         self.input_button.pack(side=tk.RIGHT, padx=10, pady=10)
 
         self.y_box = tk.Text(self.master, height = 5, width = 20)
-        self.y_box.insert(1.0, str(BOARD_HEIGHT))
+        self.y_box.insert(1.0, str(board_height))
         self.y_box.pack(side=tk.RIGHT)
 
         self.x_box = tk.Text(self.master, height = 5, width = 20)
-        self.x_box.insert(1.0, str(BOARD_WIDTH))
+        self.x_box.insert(1.0, str(board_width))
         self.x_box.pack(side=tk.RIGHT)
 
     def define_board_size(self):
+        global board_width, board_height, is_valid_board_size, board_size_updated
         x_inp = self.x_box.get(1.0, "end-1c") #-1c to remove newline character
         y_inp = self.y_box.get(1.0, "end-1c")
         # self.input_label.config(text = "X: "+ x_inp + " mm; Y: " + y_inp + " mm")
         is_valid_board_size = True
         # set board sizes 
-        BOARD_WIDTH = int(x_inp)
-        BOARD_HEIGHT = int(y_inp)
+        board_width = int(x_inp)
+        board_height = int(y_inp)
 
+        # Gcode to set the board size
+        size_string = "A" + str(board_width) + "," + str(board_height) + "\n"
+        ser.write(size_string.encode())
+        # print(ser.readline().decode().strip())
+        # print(ser.readline().decode().strip())
+        # print(ser.readline().decode().strip())
+        # print(ser.readline().decode().strip())
+
+        board_size_updated = True
+            
         self.master.destroy()
 
 
@@ -193,12 +210,15 @@ def draw_function(file_path, ser):
 
     start = 0 # debug
 
-    # Gcode to set the board size
-    size_string = "A" + str(BOARD_WIDTH) + "," + str(BOARD_HEIGHT) + "\n"
-    ser.write(size_string.encode())
-    print(ser.readline().decode().strip())
-    print(ser.readline().decode().strip())
-    print(ser.readline().decode().strip())
+    # Gcode to set the board size --> MOVED TO DEFINE BOARD SIZE
+    if board_size_updated == False:
+        size_string = "A" + str(board_width) + "," + str(board_height) + "\n"
+        ser.write(size_string.encode())
+        print(ser.readline().decode().strip())
+        print(ser.readline().decode().strip())
+        print(ser.readline().decode().strip())
+        print(ser.readline().decode().strip())
+        board_size_updated == True
 
     # Loop through the file and send each line to the serial port
     for line in file:
@@ -224,7 +244,7 @@ def draw_function(file_path, ser):
 
     # Move back to default position
     # toevoegen M5
-    # homing_string = ("G1 X"+str(BOARD_WIDTH/2)+" Y" + str(BOARD_HEIGHT) + ";\n")
+    # homing_string = ("G1 X"+str(board_width/2)+" Y" + str(board_height) + ";\n")
     homing_string = ("G28;\n")
     ser.write(homing_string.encode())
     # Close the file and serial port
@@ -236,10 +256,10 @@ def draw_function(file_path, ser):
 ####        MAIN        ####
 if __name__ == "__main__":
 
-    # ser = open_serial() #uncomment to send to arduino
+    ser = open_serial() #uncomment to send to arduino
     root = tk.Tk()
     app = FileSelectionGUI(root)
     # root.attributes('-fullscreen', True)
-    # app.state('zoomed')
+    #app.state('zoomed')
     app.mainloop()
     

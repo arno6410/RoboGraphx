@@ -59,6 +59,16 @@ void Sled::Update(float x_destination, float y_destination){ //efficienter maken
   _d2B = Sled::CalculateRopeLength(x_destination, y_destination, 2);
   // Serial.print(", d2B: ");
   // Serial.println(_d2B);
+
+  // DEBUG: print updated lengths
+  Serial.print("Rope lengths: d1A = ");
+  Serial.print(_d1A);
+  Serial.print(", d1B = ");
+  Serial.print(_d1B);
+  Serial.print(", d2A = ");
+  Serial.print(_d2A);
+  Serial.print(", d2B = ");
+  Serial.println(_d2B);
 }
 
 long Sled::CalculateSteps(int stepper_number){

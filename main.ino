@@ -22,15 +22,16 @@ long go_to_position[2];         // An array to store the target position (x and 
 unsigned long t1;
 unsigned long t2;
 unsigned long myTime;
-int rotation_size = 3200;       // Microstepping, amount of steps for one rotation of stepper motor
+int rotation_size = 3200;       // 1/16 Microstepping, amount of steps for one rotation of stepper motor
 float x_offset = 8 + 21;          // AFSTAND TUSSEN STEPPER AS EN BORD, 8mm rand + 21 mm naar as van stepper
 float y_offset = 30;              // bocenkant bord naar stepper
 float ground_to_pen = 120;        //offset tussen grond en de pen
 float radius = 15;              // [mm]
-float x_board = 500;            // [mm]
-float y_board = 500;           // [mm]
-float x_start = 1200 + x_offset;   // [mm]
+float x_board = 2400;            // [mm]
+float y_board = 1200;           // [mm]
+float x_start = x_board/2 + x_offset;   // [mm]
 float y_start = y_board-y_offset-ground_to_pen;            // [mm]
+
 Sled krijtje(x_start, y_start, x_board + 2*x_offset, y_board, radius, rotation_size);  //Create sled object
 bool movement_type = false;     // false if absolute movement, true if relative movement
 
@@ -157,6 +158,7 @@ void InterpretGCode(String command){
   float y_coord;
   bool move = false;      // Set to true if the Gcommand is for moving (G0, G1)
   int speed = 1000;
+  int home_speed = 3000;
   int m_value = 0;
   bool is_writing = false;//Necessary?
   int pos = 0;
@@ -189,19 +191,28 @@ void InterpretGCode(String command){
         int i2 = test_command.indexOf(',');
         // String test_parameter = test_command.substring(0, i2);
         
-        float x_board_test = test_command.substring(0, i2).toFloat();
+        x_board = test_command.substring(0, i2).toFloat();
         Serial.print("X board: ");
-        Serial.println(x_board_test);
+        Serial.println(x_board);
         
         // int i2 = test_command.indexOf(' ');
         // String test_parameter = test_command.substring(0, i2);
-        float y_board_test = test_command.substring(i2-1).toFloat();
+        y_board = test_command.substring(i2+1).toFloat();
         Serial.print("Y board: ");
-        Serial.println(y_board_test);
-        krijtje.SetBoardSize(x_board_test, y_board_test, x_offset, y_offset, ground_to_pen);
+        Serial.println(y_board);
+        krijtje.SetBoardSize(x_board, y_board, x_offset, y_offset, ground_to_pen);
+
+        x_start = x_board/2 + x_offset;
+        y_start = y_board-y_offset-ground_to_pen;
+        krijtje.SetPosition(x_start, y_start); // reset starting position to middle bottom of board
 
         Serial.print("X board updated: ");
         Serial.println(krijtje.GetXBoard());
+
+        Serial.print("Start position: X = ");
+        Serial.print(krijtje.GetXPosition());
+        Serial.print(", Y = ");
+        Serial.println(krijtje.GetYPosition());
         break;
       }
       case 'F':
@@ -219,7 +230,7 @@ void InterpretGCode(String command){
         Serial.println("Engage pen");
         m_value = next_parameter.substring(1).toInt();
         if (m_value == 3){
-          for (pos = servo_pos+30; pos >= servo_pos; pos -= 1) { // goes from 180 degrees to 0 degrees
+          for (pos = servo_pos+50; pos >= servo_pos; pos -= 1) { // goes from 180 degrees to 0 degrees
             myservo.write(pos);              // tell servo to go to position in variable 'pos'
             delay(1);                       // waits 15ms for the servo to reach the position
           }
@@ -256,6 +267,11 @@ void InterpretGCode(String command){
         else if(command_type == 28){    // Homing
           x_coord = x_start;
           y_coord = y_start;
+
+
+          stepper1.setMaxSpeed(home_speed);
+          stepper2.setMaxSpeed(home_speed);          
+
           for (pos = servo_pos; pos <= servo_pos+30; pos += 1) { // goes from 0 degrees to 10 degrees
             // in steps of 1 degree
             myservo.write(pos);              // tell servo to go to position in variable 'pos'
