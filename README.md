@@ -34,10 +34,10 @@ The best way to generate usable Gcode is to convert a SVG to Gcode using [Inksca
 ### Electronics
 The following circuit has to be made twice, once for each stepper motor
 ![circuit](./pictures/circuit.png)
-[Source](https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-ultimate-guide/)
-The pins on the arduino can be found in the arduino code, they can also be changed there if desired. The source voltage should be +12V and ground. The breadboard connections look like this:
+[Source](https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-ultimate-guide/).
+The pins on the arduino can be found in the arduino code, they can also be changed there if desired. The source voltage should be +12V and gnd. The breadboard connections look like this:
 
-For controlling the pen, a servo motor is used. The to be connected pins can also be found in the arduino code. Here also put a diagram
+For controlling the pen, a servo motor is used. The to be connected pins can also be found in the arduino code. It should be connected to +5V, gnd and the correct data pin on the arduino. 
 
 Parts list:
  - Arduino Uno
@@ -48,11 +48,16 @@ Parts list:
  - Some wires
 
 Almost all these parts are interchangable with similar parts
+![circuit](./pictures/breadboard.png)
 ### Arduino code
+The arduino never has to be touched while running RoboGraphx. Everything can be configured from the Python GUI. The arduino code just has to be uploaded to the device. The constants in the arduino code can be found on following diagram:
+![diagram](./pictures/stepper_diagram.png)
 ### Python code
+Running the Python code gives a simple GUI to start drawing. It is connected to the arduino via a USB cable, using the UART protocol. The Python code sends the Gcode line by line to the arduino, which then parses each command and controls the stepper motors.The SERIAL_PORT has to be changed depending on the computer that runs the code
 ### 3D printed parts
+All the other parts can be 3D printed, the files are found in the '3d models' folder
 ### Making suitable Gcode
-[test](./documents/gcode-guide.pdf)!
+[This](./documents/gcode-guide.pdf) pdf explains the process to convert any image to usable Gcode using Inkscape
 ## Possible Future Features
 
 - Improving the workflow
