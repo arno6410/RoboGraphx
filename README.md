@@ -33,7 +33,7 @@ The best way to generate usable Gcode is to convert a SVG to Gcode using [Inksca
 
 ### Electronics
 The following circuit has to be made twice, once for each stepper motor
-![circuit](./pictures/circuit.jpg)
+![circuit](./pictures/circuit.png)
 [Source](https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-ultimate-guide/)
 The pins on the arduino can be found in the arduino code, they can also be changed there if desired. The source voltage should be +12V and ground. The breadboard connections look like this:
 
