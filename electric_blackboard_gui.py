@@ -23,8 +23,8 @@ class FileSelectionGUI(tk.Frame):
 
         self.master.title("Select File and Draw")
         w, h = root.winfo_screenwidth()-100, root.winfo_screenheight()-100
-        # self.master.geometry("{}x{}+0+0". format(w, h))
-        self.master.geometry("600x1000")
+        self.master.geometry("{}x{}+0+0". format(w, h))
+        # self.master.geometry("600x1000")
         # self.master.geometry("1000x600")      
 
         root.columnconfigure(0, weight=3)

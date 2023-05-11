@@ -1,6 +1,6 @@
 
 # RoboGraphx
-The goal of this project is to develop a system that can write and erase on a blackboard, and draw some basic figures.
+The goal of this project is to develop a system that can write and erase on a blackboard, and draw some basic figures. The inspiration for the design/working is the [Maslow CNC](https://www.maslowcnc.com/)
 
 ## Usage/Examples
 
@@ -28,6 +28,7 @@ Supported commands:
 
 The best way to generate usable Gcode is to convert a SVG to Gcode using [Inkscape](https://inkscape.org/) and the [J Tech Photonics Laser Tool](https://github.com/JTechPhotonics/J-Tech-Photonics-Laser-Tool) extension
 
+Right now, there is no calibration procedure. The sled with the marker has to be placed at the bottom in the middle of the width of the board before starting. After a drawing, the sled will automatically return to this 'home' position
 
 ## Installation
 
@@ -60,9 +61,16 @@ All the other parts can be 3D printed, the files are found in the '3d models' fo
 ## Possible Future Features
 
 - Improving the workflow
-    - Input the dimensions (board size, offsets) in the GUI
     - One program / GUI to convert images to Gcode and also to draw the Gcode
 - Clean up the setup (Better cables, make a PCB, ...)
+- Calibration procedure to automatically determine board dimensions/position
+- Automatically erase the board
 - Typing text into the GUI -> Gcode -> writing on the board
     - Some default drawings, eg. writing 'Smith Chart' will draw a smith chart
 - Make the signals to arduino wireless (Bluetooth/Wifi)
+
+
+## Sources
+https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-ultimate-guide/
+https://forums.maslowcnc.com/t/chain-length-calculations/6029
+
