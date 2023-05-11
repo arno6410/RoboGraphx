@@ -52,7 +52,7 @@ Almost all these parts are interchangable with similar parts
 ### Python code
 ### 3D printed parts
 ### Making suitable Gcode
-[test](gcode-guide.pdf)
+[test](./documents/gcode-guide.pdf)!
 ## Possible Future Features
 
 - Improving the workflow
