@@ -36,7 +36,7 @@ The following circuit has to be made twice, once for each stepper motor
 ![circuit](./pictures/circuit.png)
 [Source](https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-ultimate-guide/).
 The pins on the arduino can be found in the arduino code, they can also be changed there if desired. The source voltage should be +12V and gnd. The breadboard connections look like this:
-![bread](./pictures/breadboard.png)
+![bread](./pictures/breadboard_connections.png)
 For controlling the pen, a servo motor is used. The to be connected pins can also be found in the arduino code. It should be connected to +5V, gnd and the correct data pin on the arduino. 
 
 Parts list:
