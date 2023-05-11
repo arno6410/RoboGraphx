@@ -23,7 +23,8 @@ class FileSelectionGUI(tk.Frame):
 
         self.master.title("Select File and Draw")
         w, h = root.winfo_screenwidth()-100, root.winfo_screenheight()-100
-        self.master.geometry("{}x{}+0+0". format(w, h))
+        # self.master.geometry("{}x{}+0+0". format(w, h))
+        self.master.geometry("600x1000")
         # self.master.geometry("1000x600")      
 
         root.columnconfigure(0, weight=3)
@@ -153,7 +154,7 @@ class BoardSizeGUI(tk.Tk):
         self.frame.pack()
 
         # input board size
-        self.input_label = tk.Label(self.master, text="Input board height and width [mm]: ") #Default waarden ergens zetten in GUI?
+        self.input_label = tk.Label(self.master, text="Input board width and height [mm]: ")
         self.input_label.pack(side=tk.TOP, pady=10)
 
         self.input_button = tk.Button(self.master, text="Input", command=self.define_board_size)
@@ -256,7 +257,7 @@ def draw_function(file_path, ser):
 ####        MAIN        ####
 if __name__ == "__main__":
 
-    ser = open_serial() #uncomment to send to arduino
+    # ser = open_serial() #uncomment to send to arduino
     root = tk.Tk()
     app = FileSelectionGUI(root)
     # root.attributes('-fullscreen', True)

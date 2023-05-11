@@ -1,5 +1,5 @@
 
-# ElectricBlackboard
+# RoboGraphx
 The goal of this project is to develop a system that can write and erase on a blackboard, and draw some basic figures.
 
 ## Usage/Examples
@@ -31,7 +31,28 @@ The best way to generate usable Gcode is to convert a SVG to Gcode using [Inksca
 
 ## Installation
 
-    
+### Electronics
+The following circuit has to be made twice, once for each stepper motor
+![circuit](./pictures/circuit.jpg)
+[Source](https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-ultimate-guide/)
+The pins on the arduino can be found in the arduino code, they can also be changed there if desired. The source voltage should be +12V and ground. The breadboard connections look like this:
+
+For controlling the pen, a servo motor is used. The to be connected pins can also be found in the arduino code. Here also put a diagram
+
+Parts list:
+ - Arduino Uno
+ - NEMA 17 stepper motor
+ - DRV8825 Stepper Motor Controller
+ - Decoupling capacitor
+ - Any generic servo motor
+ - Some wires
+
+Almost all these parts are interchangable with similar parts
+### Arduino code
+### Python code
+### 3D printed parts
+### Making suitable Gcode
+[test](../documents/gcode-guide)
 ## Possible Future Features
 
 - Improving the workflow
@@ -41,4 +62,3 @@ The best way to generate usable Gcode is to convert a SVG to Gcode using [Inksca
 - Typing text into the GUI -> Gcode -> writing on the board
     - Some default drawings, eg. writing 'Smith Chart' will draw a smith chart
 - Make the signals to arduino wireless (Bluetooth/Wifi)
-

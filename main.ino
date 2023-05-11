@@ -127,29 +127,6 @@ void MoveStraight(float x_destination, float y_destination, MultiStepper stepper
 
 }
 
-//Move in a straight line using several intermediate points
-//Doesn't work 100%
-// void StraightLine(float x_destination, float y_destination, MultiStepper steppers_control, int n_points) {
-//   // Calculate intermediate points(delta)
-//   float total_x = x_destination - krijtje.GetXPosition();
-//   float total_y = y_destination - krijtje.GetYPosition();
-//   float delta_x = total_x / n_points;
-//   float delta_y = total_y / n_points;
-
-//   float current_destination[2] = {krijtje.GetXPosition() + delta_x, krijtje.GetYPosition() + delta_y};
-
-//   // Move to each point
-//   for (int i = 0; i < n_points; i++) {
-//     MoveStraight(current_destination[0],current_destination[1],krijtje,steppers_control);
-//     current_destination[0] += delta_x;
-//     current_destination[1] += delta_y;
-//   }
-// }
-
-// void StraightRelative(float rel_x_destination, float rel_y_destination, MultiStepper steppers_control) {
-//   MoveStraight(rel_x_destination + krijtje.GetXPosition(), rel_y_destination + krijtje.GetYPosition(), steppers_control, movement_type);
-// }
-
 void InterpretGCode(String command){
   // command is a single line of G-code, function interprets it and acts according to the command
   // In the form: G01 X200 Y300
